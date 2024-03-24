@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1711293900625,
+      "tag": "0000_red_archangel",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1711294657692,
+      "tag": "0001_keen_stark_industries",
+      "breakpoints": true
+    }
+  ]
+}

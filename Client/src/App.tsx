@@ -1,25 +1,41 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { fetchData } from "./helper/helper";
+
+interface Q {
+  id: number;
+  name: string;
+}
+
+interface Home {
+  msg: string;
+  q: Q;
+}
 
 function App() {
-  const [msg, setMsg] = useState("");
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios("http://localhost:3000");
-        setMsg(response.data); // Update msg with actual data
-      } catch (error) {
-        console.error(error); // Handle errors gracefully
-      }
-    };
+  const [msg, setMsg] = useState<string>("");
+  const [q, setQ] = useState<Q>({ id: 0, name: "" });
 
-    fetchData();
+  useEffect(() => {
+    fetchData<Home>()
+      .then((data) => {
+        const res = data;
+        setMsg(res.msg);
+        setQ(res.q);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
+
   return (
     <>
       <h1 className="btn btn-primary">Hello world!</h1>
       <br />
-      <button className="btn btn-secondary">{msg ? msg : "failed"}</button>
+      <button className="btn btn-secondary">{msg}</button>
+      <br />
+      <h1>
+        {q.id} {q.name}
+      </h1>
     </>
   );
 }
