@@ -7,7 +7,7 @@ const homeRouter = express.Router();
 homeRouter.get("/", async (request: Request, response: Response) => {
   try {
     const data = await qValidation();
-    response.send({ msg: "Express + TypeScript Server", q: data });
+    response.send({ msg: "Express + TypeScript Server", q: data[0] });
   } catch (error) {
     if (error instanceof DatabaseError) {
       response.status(500).send({ msg: "Database error" });
