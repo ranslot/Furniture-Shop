@@ -2,14 +2,14 @@ import { useState } from "react";
 import { postData } from "./helpers/httpRequest";
 
 // import { postData } from "./helpers/httpRequest";
-interface FormData {
+type testFormData = {
   email: string;
   password: string;
-}
+};
 
 function App() {
   const [responseText, setResponseText] = useState({});
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<testFormData>({
     email: "",
     password: "",
   });
@@ -20,7 +20,7 @@ function App() {
       email: e.currentTarget.email.value,
       password: e.currentTarget.password.value,
     });
-    postData<FormData>(formData, "auth").then((response) => {
+    postData<testFormData>(formData, "auth").then((response) => {
       if (response.ok) {
         response.json().then((data) => {
           setResponseText(data);
