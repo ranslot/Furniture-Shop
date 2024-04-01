@@ -16,6 +16,7 @@ export async function authStatus(
     return response.sendStatus(403);
   }
 
+  //Send to next middleware
   response.locals = user[0];
 
   return next();
