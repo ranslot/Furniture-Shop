@@ -7,6 +7,8 @@ authRouter
     return response.send("log in");
   })
   .post("/", async (request: Request, response: Response) => {
+    console.log(request.body);
+
     return response.send(request.body);
   })
   .get("/register", async (request: Request, response: Response) => {
