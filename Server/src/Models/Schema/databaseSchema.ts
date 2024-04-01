@@ -13,7 +13,7 @@ export const Furniture_Shop_Schema = pgSchema("Furniture_Shop");
 
 export const user = pgTable("user", {
   id: serial("id").primaryKey(),
-  token: varchar("token", { length: 255 }).notNull(),
+  token: varchar("token", { length: 255 }).default(""),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),

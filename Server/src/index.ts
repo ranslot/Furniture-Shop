@@ -1,17 +1,19 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import homeRouter from "./Routers/home";
+import homeRouter from "./Routers/homeRouter";
+import authRouter from "./Routers/authRouter";
+import { authStatus } from "./Middlewares/authMiddleware";
 
 //Setup
 dotenv.config();
 const app: Express = express();
 
 //Middleware
-app.use(cors());
+app.use(express.json()).use(cors());
 
 //Routes
-app.use("/", homeRouter);
+app.use("/", homeRouter).use("/auth", authRouter);
 
 //Run
 const port = process.env.PORT;

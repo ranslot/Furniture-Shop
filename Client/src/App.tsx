@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchData } from "./helper/helper";
+import { getData } from "./helpers/httpRequest";
 
 interface Q {
   id: number;
@@ -16,7 +16,7 @@ function App() {
   const [q, setQ] = useState<Q>({ id: 0, name: "" });
 
   useEffect(() => {
-    fetchData<Home>()
+    getData<Home>()
       .then((data) => {
         const res = data;
         setMsg(res.msg);
