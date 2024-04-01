@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchData } from "./Helper/helper";
+import { fetchData } from "./helper/helper";
 
 interface Q {
   id: number;
