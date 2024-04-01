@@ -1,41 +1,45 @@
-import { useEffect, useState } from "react";
-import { getData } from "./helpers/httpRequest";
+import { useState } from "react";
+import { postData } from "./helpers/httpRequest";
 
-interface Q {
-  id: number;
-  name: string;
-}
-
-interface Home {
-  msg: string;
-  q: Q;
+// import { postData } from "./helpers/httpRequest";
+interface FormData {
+  email: string;
+  password: string;
 }
 
 function App() {
-  const [msg, setMsg] = useState<string>("");
-  const [q, setQ] = useState<Q>({ id: 0, name: "" });
+  const [responseText, setResponseText] = useState({});
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
 
-  useEffect(() => {
-    getData<Home>()
-      .then((data) => {
-        const res = data;
-        setMsg(res.msg);
-        setQ(res.q);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setFormData({
+      email: e.currentTarget.email.value,
+      password: e.currentTarget.password.value,
+    });
+    postData<FormData>(formData, "auth").then((response) => {
+      if (response.ok) {
+        response.json().then((data) => {
+          setResponseText(data);
+          console.log("Form submitted successfully ", responseText);
+        });
+      } else {
+        console.error("Failed to submit form:", response.statusText);
+      }
+    });
+  }
   return (
     <>
-      <h1 className="btn btn-primary">Hello world!</h1>
-      <br />
-      <button className="btn btn-secondary">{msg}</button>
-      <br />
-      <h1>
-        {q.id} {q.name}
-      </h1>
+      <form onSubmit={handleSubmit} method="post">
+        <label htmlFor="email">Email : </label>
+        <input type="email" name="email" id="email" />
+        <label htmlFor="password">Password : </label>
+        <input type="password" name="password" id="password" />
+        <button type="submit">submit</button>
+      </form>
     </>
   );
 }

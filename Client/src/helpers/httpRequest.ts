@@ -9,13 +9,17 @@ export const getData = async <T>(route: string = "") => {
   }
 };
 
-export const postData = async <T>(route: string = "", data: T) => {
+export const postData = async <T>(data: T, route: string = "") => {
   try {
     const response = await fetch(SERVER_URL + route, {
-      method: "POST",
+      method: "post",
       body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
-    return response.json();
+
+    return response;
   } catch (error) {
     throw new Error();
   }
