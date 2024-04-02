@@ -6,16 +6,33 @@ type testFormData = {
   password: string;
 };
 
+type AuthUser = {
+  token: string | null;
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  isAdmin: boolean;
+  createdAt: Date;
+  modifiedAt: Date;
+};
+
+type ResponseData = {
+  msg?: string;
+  error?: object;
+  user?: AuthUser;
+  accessToken?: string;
+  role?: "Admin" | "Guest" | "User";
+};
+
 function App() {
-  const [responseText, setResponseText] = useState<testFormData>({
-    email: "",
-    password: "",
+  const [responseText, setResponseText] = useState<ResponseData>({
+    msg: "",
+    error: {},
   });
 
   useEffect(() => {
-    if (responseText.email && responseText.password) {
-      console.log("Form submitted successfully ", responseText);
-    }
+    console.log(responseText);
   }, [responseText]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -27,7 +44,7 @@ function App() {
 
     try {
       const response = await postData<testFormData>(formData, "auth");
-      const data = (await response.json()) as testFormData;
+      const data = (await response.json()) as ResponseData;
       setResponseText(data);
     } catch (error) {
       console.error(error);
@@ -43,7 +60,6 @@ function App() {
         <input type="password" name="password" id="password" />
         <button type="submit">submit</button>
       </form>
-      {responseText.email && <p>{responseText.email}</p>}
     </>
   );
 }

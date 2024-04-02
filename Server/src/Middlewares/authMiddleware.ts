@@ -1,23 +1,25 @@
 import { NextFunction, Request, Response } from "express";
-import { getUserByToken } from "../Models/userModel";
+import * as jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-export async function authStatus(
+dotenv.config();
+const JWT_SECRET = process.env.HASH_KEY as string;
+
+export function authStatus(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   let token = request.body.token;
+
   if (!token) {
-    return response.sendStatus(403);
+    next();
   }
-
-  const user = await getUserByToken(token);
-  if (user.length === 0) {
-    return response.sendStatus(403);
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
+    response.locals.user = user;
+    next();
+  } catch (error) {
+    next();
   }
-
-  //Send to next middleware
-  response.locals = user[0];
-
-  return next();
 }

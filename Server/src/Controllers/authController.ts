@@ -1,12 +1,43 @@
+//Token stuff
+import * as jwt from "jsonwebtoken";
+import { getUserByEmail } from "../Models/userModel";
 import { Request, Response } from "express";
-import { deleteUser, updateUserToken } from "../Models/userModel";
+import { compare } from "bcrypt";
+
+const JWT_SECRET = process.env.HASH_KEY as string;
+
+type UserLogin = {
+  email: string;
+  password: string;
+};
 
 //login
-export function logIn(token: string) {
-  return updateUserToken(token);
+export async function logIn(request: Request, response: Response) {
+  const { email, password } = request.body as UserLogin;
+
+  /**
+   *
+   * validation here
+   *
+   */
+
+  const user = await getUserByEmail(email);
+  if (user.length === 0) {
+    return response.json({ msg: "User not found" });
+  }
+
+  const passwordMatches = await compare(password, user[0].password);
+  if (!passwordMatches) {
+    return response.json({ msg: "Wrong password" });
+  }
+
+  const genToken = jwt.sign(user[0], JWT_SECRET);
+  return response
+    .status(200)
+    .json({ msg: "Login Success", user: user[0], accessToken: genToken });
 }
 
 //logout
 export function logOut(token: string) {
-  return deleteUser(token);
+  // return deleteUserToken(token);
 }

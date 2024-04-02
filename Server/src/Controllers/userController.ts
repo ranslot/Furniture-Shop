@@ -6,7 +6,7 @@ import {
   storeUser,
   updateUser,
 } from "../Models/userModel";
-import vine from "@vinejs/vine";
+import vine, { errors } from "@vinejs/vine";
 
 type User = {
   name: string;
@@ -31,11 +31,18 @@ export function show(request: Request, response: Response) {
   return response.send(getUserById(id));
 }
 
+//register
 export async function store(request: Request, response: Response) {
-  //validate data
-  const data = await validator.validate(request.body);
+  try {
+    //validate data
+    const data = await validator.validate(request.body);
 
-  return response.send(storeUser<User>(data));
+    return response.json(storeUser<User>(data));
+  } catch (error) {
+    if (error instanceof errors.E_VALIDATION_ERROR) {
+      return response.json(error);
+    }
+  }
 }
 
 export async function update(request: Request, response: Response) {

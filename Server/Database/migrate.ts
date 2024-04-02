@@ -3,7 +3,7 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import config from "../drizzle.config";
 import { user } from "../src/Models/Schema/databaseSchema";
-import { passwordHashing } from "../src/helpers/authHelper";
+import { hash } from "bcrypt";
 
 const connectionString = `postgres://${config.dbCredentials.user}:${config.dbCredentials.password}@${config.dbCredentials.host}/${config.dbCredentials.database}`;
 
@@ -16,7 +16,7 @@ async function main() {
 
   const ADMIN_NAME = process.env.ADMIN_NAME as string;
   const ADMIN_EMAIL = process.env.ADMIN_EMAIL as string;
-  const ADMIN_PASSWORD = passwordHashing(process.env.ADMIN_PASSWORD as string);
+  const ADMIN_PASSWORD = await hash(process.env.ADMIN_PASSWORD as string, 10);
 
   await db.insert(user).values({
     name: ADMIN_NAME,

@@ -5,7 +5,6 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import homeRouter from "./Routers/homeRouter";
 import authRouter from "./Routers/authRouter";
-import { authStatus } from "./Middlewares/authMiddleware";
 
 //Setup
 dotenv.config();

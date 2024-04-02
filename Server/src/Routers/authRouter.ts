@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { logIn } from "../Controllers/authController";
 
 const authRouter = express.Router();
 
@@ -8,8 +9,7 @@ authRouter
   })
   .post("/", async (request: Request, response: Response) => {
     console.log(request.body);
-
-    return response.send(request.body);
+    logIn(request, response);
   })
   .get("/register", async (request: Request, response: Response) => {
     return response.send("register");

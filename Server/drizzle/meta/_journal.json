@@ -29,6 +29,13 @@
       "when": 1711964680073,
       "tag": "0003_striped_firebird",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1712053657728,
+      "tag": "0004_mature_iron_fist",
+      "breakpoints": true
     }
   ]
 }
