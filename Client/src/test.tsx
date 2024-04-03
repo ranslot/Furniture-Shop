@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "./helpers/httpRequest";
 import { useState } from "react";
+import { Link } from "wouter";
 
 type sendFormData = {
   email: string;
@@ -86,6 +87,9 @@ function Test() {
         {serverErrors?.errors.password && <p>Wrong Password</p>}
         <button type="submit">submit</button>
       </form>
+      <Link to="/g" className="btn btn-square btn-primary">
+        Guest
+      </Link>
     </>
   );
 }
