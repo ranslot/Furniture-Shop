@@ -7,11 +7,6 @@ import { z } from "zod";
 
 const JWT_SECRET = process.env.ACCESS_TOKEN_SECRET as string;
 
-type UserLogin = {
-  email: string;
-  password: string;
-};
-
 //validator
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -38,12 +33,19 @@ export async function logIn(request: Request, response: Response) {
       return response.json({ errors: { password: "Password not found" } });
     }
 
-    const genToken = jwt.sign(user[0], JWT_SECRET, { expiresIn: "15m" });
+    const accessToken = jwt.sign(user[0], JWT_SECRET, { expiresIn: "7d" });
     return response
-      .cookie("jwt", genToken, { httpOnly: true, sameSite: "strict" })
+      .cookie("jwt", accessToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
       .status(200)
       .json({
-        success: { msg: "Login Success", user: user[0] },
+        success: {
+          msg: "Login Success",
+          user: user[0],
+        },
       });
   }
 

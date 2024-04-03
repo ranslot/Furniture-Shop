@@ -10,13 +10,13 @@ export function authStatus(
   response: Response,
   next: NextFunction
 ) {
-  let token = request.cookies["jwt"];
+  let accessToken = request.cookies["jwt"];
 
-  if (!token) {
+  if (!accessToken) {
     next();
   }
   try {
-    const user = jwt.verify(token, JWT_SECRET);
+    const user = jwt.verify(accessToken, JWT_SECRET);
     response.locals.user = user;
     next();
   } catch (error) {
