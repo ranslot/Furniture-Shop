@@ -56,6 +56,15 @@ export async function logIn(request: Request, response: Response) {
 }
 
 //logout
-export function logOut(token: string) {
-  // return deleteUserToken(token);
+export function logOut(response: Response) {
+  return response
+    .clearCookie("jwt", {
+      httpOnly: true,
+    })
+    .status(200)
+    .json({
+      success: {
+        msg: "logout Success",
+      },
+    });
 }
