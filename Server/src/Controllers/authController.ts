@@ -23,18 +23,20 @@ export async function logIn(request: Request, response: Response) {
 
   const user = await getUserByEmail(email);
   if (user.length === 0) {
-    return response.json({ msg: "User not found" });
+    return response.json({ errors: { email: true } });
   }
 
   const passwordMatches = await compare(password, user[0].password);
   if (!passwordMatches) {
-    return response.json({ msg: "Wrong password" });
+    return response.json({ errors: { password: true } });
   }
 
   const genToken = jwt.sign(user[0], JWT_SECRET);
   return response
     .status(200)
-    .json({ msg: "Login Success", user: user[0], accessToken: genToken });
+    .json({
+      success: { msg: "Login Success", user: user[0], accessToken: genToken },
+    });
 }
 
 //logout

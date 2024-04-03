@@ -9,18 +9,14 @@ export const getData = async <T>(route: string = "") => {
   }
 };
 
-export const postData = async <T>(data: T, route: string = "") => {
-  try {
-    const response = await fetch(SERVER_URL + route, {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+export async function postData<T>(data: T, route: string = "") {
+  const response = await fetch(SERVER_URL + route, {
+    method: "post",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-    return response;
-  } catch (error) {
-    throw new Error();
-  }
-};
+  return response.json();
+}

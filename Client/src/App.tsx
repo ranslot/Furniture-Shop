@@ -1,63 +1,89 @@
-import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "./helpers/httpRequest";
+import { useState } from "react";
 
-type testFormData = {
+type sendFormData = {
   email: string;
   password: string;
 };
 
-type AuthUser = {
-  token: string | null;
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  isAdmin: boolean;
-  createdAt: Date;
-  modifiedAt: Date;
+type errorFormData = {
+  errors: {
+    email: string;
+    password: string;
+  };
 };
 
-type ResponseData = {
-  msg?: string;
-  error?: object;
-  user?: AuthUser;
-  accessToken?: string;
-  role?: "Admin" | "Guest" | "User";
+type successFormData = {
+  success: {
+    msg: string;
+    user: {
+      email: string;
+      password: string;
+      id: number;
+      name: string;
+      isAdmin: boolean | null;
+      createdAt: Date | null;
+      modifiedAt: Date | null;
+    };
+    accessToken: string;
+  };
 };
+
+type resFormData = successFormData | errorFormData;
 
 function App() {
-  const [responseText, setResponseText] = useState<ResponseData>({
-    msg: "",
-    error: {},
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<sendFormData>();
+
+  const [serverErrors, setServerErrors] = useState<errorFormData | null>(null);
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (data: sendFormData) => postData<sendFormData>(data, "auth"),
+    onSuccess: (res: resFormData) => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
+      if ("errors" in res) {
+        setServerErrors(res);
+      }
+      console.log(res);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
   });
 
-  useEffect(() => {
-    console.log(responseText);
-  }, [responseText]);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const formData = Object.fromEntries(
-      new FormData(e.currentTarget)
-    ) as testFormData;
-
-    try {
-      const response = await postData<testFormData>(formData, "auth");
-      const data = (await response.json()) as ResponseData;
-      setResponseText(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  const onSubmit = (data: sendFormData) => {
+    mutation.mutate(data);
+  };
 
   return (
     <>
-      <form onSubmit={handleSubmit} method="post">
+      <form onSubmit={handleSubmit(onSubmit)} method="post">
         <label htmlFor="email">Email : </label>
-        <input type="email" name="email" id="email" />
+        <input
+          {...register("email", { required: true })}
+          type="email"
+          name="email"
+          id="email"
+        />
+        {errors.email && <p>Email is required</p>}
+        {serverErrors?.errors.email && <p>Wrong Email</p>}
         <label htmlFor="password">Password : </label>
-        <input type="password" name="password" id="password" />
+        <input
+          {...register("password", { required: true })}
+          type="password"
+          name="password"
+          id="password"
+        />
+        {errors.password && <p>Password is required</p>}
+        {serverErrors?.errors.password && <p>Wrong Password</p>}
         <button type="submit">submit</button>
       </form>
     </>
