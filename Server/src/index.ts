@@ -10,15 +10,21 @@ import authRouter from "./Routers/authRouter";
 dotenv.config();
 const app: Express = express();
 
+const SERVER_PORT = process.env.SERVER_PORT as string;
+const CLIENT_URL = process.env.CLIENT_URL as string;
+const URL = process.env.URL as string;
+
 //Middleware
-app.use(express.json()).use(cors()).use(cookieParser()).use(helmet());
+app
+  .use(express.json())
+  .use(cors({ credentials: true, origin: `${CLIENT_URL}` }))
+  .use(cookieParser())
+  .use(helmet());
 
 //Routes
 app.use("/", homeRouter).use("/auth", authRouter);
 
 //Run
-const port = process.env.PORT;
-const url = process.env.URL;
-app.listen(port, () => {
-  console.log(`[server]: Server is running at http://${url}:${port}`);
+app.listen(SERVER_PORT, () => {
+  console.log(`[server]: Server is running at http://${URL}:${SERVER_PORT}`);
 });

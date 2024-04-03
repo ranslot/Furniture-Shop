@@ -3,7 +3,7 @@ import { authStatus } from "../Middlewares/authMiddleware";
 
 const homeRouter = express.Router();
 
-homeRouter.post(
+homeRouter.get(
   "/",
   authStatus,
   async (request: Request, response: Response) => {

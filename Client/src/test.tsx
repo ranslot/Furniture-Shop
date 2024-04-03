@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postData } from "./helpers/httpRequest";
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 
 type sendFormData = {
   email: string;
@@ -34,24 +34,25 @@ type successFormData = {
 
 type resFormData = successFormData | errorFormData;
 
-function Test() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<sendFormData>();
+export default function Test() {
+  const { register, handleSubmit } = useForm<sendFormData>();
 
-  const [serverErrors, setServerErrors] = useState<errorFormData | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_location, setLocation] = useLocation();
+
+  const [errors, setErrors] = useState<errorFormData | null>(null);
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (data: sendFormData) => postData<sendFormData>(data, "auth"),
+    mutationFn: (data: sendFormData) =>
+      postData<sendFormData>(data, "auth/login"),
     onSuccess: (res: resFormData) => {
-      // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["auth"] });
       if ("errors" in res) {
-        setServerErrors(res);
+        setErrors(res);
+      } else {
+        setLocation("/u");
       }
       console.log(res);
     },
@@ -68,30 +69,23 @@ function Test() {
     <>
       <form onSubmit={handleSubmit(onSubmit)} method="post">
         <label htmlFor="email">Email : </label>
-        <input
-          {...register("email", { required: true })}
-          type="email"
-          name="email"
-          id="email"
-        />
-        {errors.email && <p>Email is required</p>}
-        {serverErrors?.errors.email && <p>Wrong Email</p>}
+        <input {...register("email")} type="email" required />
+        {errors?.errors.email && <p>{errors?.errors.email}</p>}
         <label htmlFor="password">Password : </label>
         <input
-          {...register("password", { required: true })}
+          {...register("password")}
           type="password"
-          name="password"
-          id="password"
+          minLength={8}
+          required
         />
-        {errors.password && <p>Password is required</p>}
-        {serverErrors?.errors.password && <p>Wrong Password</p>}
-        <button type="submit">submit</button>
+        {errors?.errors.password && <p>{errors?.errors.password}</p>}
+        <button type="submit" className="btn btn-circle btn-accent">
+          submit
+        </button>
       </form>
-      <Link to="/g" className="btn btn-square btn-primary">
+      <Link to="/g" className="btn btn-square btn-secondary ">
         Guest
       </Link>
     </>
   );
 }
-
-export default Test;
