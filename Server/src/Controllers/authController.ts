@@ -16,13 +16,13 @@ const loginSchema = z.object({
 });
 
 //login
-export async function logIn(request: Request, response: Response) {
+export async function authLogin(request: Request, response: Response) {
   const result = loginSchema.safeParse(request.body);
 
   if (result.success) {
     const user = await getUserByEmail(result.data.email);
     if (user.length === 0) {
-      return response.json({ errors: { email: "Email not found" } });
+      return response.json({});
     }
 
     const passwordMatches = await compare(
@@ -30,7 +30,7 @@ export async function logIn(request: Request, response: Response) {
       user[0].password
     );
     if (!passwordMatches) {
-      return response.json({ errors: { password: "Password not found" } });
+      return response.json({});
     }
 
     const accessToken = jwt.sign(user[0], JWT_SECRET, { expiresIn: "7d" });
@@ -41,12 +41,7 @@ export async function logIn(request: Request, response: Response) {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .status(200)
-      .json({
-        success: {
-          msg: "Login Success",
-          user: user[0],
-        },
-      });
+      .json({});
   }
 
   const error = result.error.format();
@@ -56,15 +51,11 @@ export async function logIn(request: Request, response: Response) {
 }
 
 //logout
-export function logOut(response: Response) {
+export function authLogout(response: Response) {
   return response
     .clearCookie("jwt", {
       httpOnly: true,
     })
     .status(200)
-    .json({
-      success: {
-        msg: "logout Success",
-      },
-    });
+    .json({});
 }

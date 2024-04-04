@@ -9,19 +9,29 @@ import {
 import { z } from "zod";
 import { hash } from "bcrypt";
 
-type User = {
-  name: string;
-  email: string;
-  password: string;
-};
+const registerSchema = z
+  .object({
+    name: z.string().min(1, { message: "Username is required" }),
+    email: z
+      .string()
+      .min(1, { message: "Email is required" })
+      .email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(1, { message: "Password is required" })
+      .min(8, { message: "Password must be longer than 8 character" }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: "Confirm Password is required" })
+      .min(8, { message: "Confirm Password must be longer than 8 character" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Confirm Password don't match",
+    path: ["confirmPassword"],
+  });
 
-const registerSchema = z.object({
-  name: z.string(),
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be longer than 8 character" }),
-});
+type RegisterFormFields = z.infer<typeof registerSchema>;
+type User = Omit<RegisterFormFields, "confirmPassword">;
 
 export function index(response: Response) {
   return response.send(getAllUsers());
@@ -36,24 +46,30 @@ export function show(request: Request, response: Response) {
 export async function store(request: Request, response: Response) {
   const data = request.body;
 
-  return response.json(storeUser<User>(data));
+  // return response.json(storeUser<User>(data));
 }
 
-export async function update(request: Request, response: Response) {
-  const result = registerSchema.safeParse(request.body);
-
-  if (result.success) {
-    const { name, email, password } = result.data;
+export async function userRegister(request: Request, response: Response) {
+  const validation = registerSchema.safeParse(request.body);
+  if (validation.success) {
+    const { name, email, password } = validation.data;
     const hashPassword = await hash(password, 10);
-    return response.json(updateUser({ name, email, password: hashPassword }));
+    // return response.json(updateUser({ name:name, email:email, password:hashPassword }));
+
+    return response.status(200).json({
+      success: true,
+      // errors: {
+      //   errorEmail: "Email already existed",
+      // },
+    });
   }
 
-  const error = result.error.format();
+  const error = validation.error.format();
   return response.json({
+    success: false,
     errors: {
-      name: error.name?._errors,
-      email: error.email?._errors,
-      password: error.password?._errors,
+      errorName: error.name?._errors[0],
+      errorEmail: error.email?._errors[0],
     },
   });
 }
