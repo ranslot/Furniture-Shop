@@ -18,35 +18,45 @@ export async function authLogin(request: Request, response: Response) {
   const result = loginSchema.safeParse(request.body);
 
   if (result.success) {
-    const user = await getUserByEmail(result.data.email);
-    if (user.length === 0) {
+    try {
+      const user = await getUserByEmail(result.data.email);
+      if (user.length === 0) {
+        return response.json({
+          success: false,
+          email: "Incorrect email.",
+        });
+      }
+
+      const passwordMatches = await compare(result.data.password, user[0].password);
+      if (!passwordMatches) {
+        return response.json({
+          success: false,
+          password: "Incorrect password.",
+        });
+      }
+
+      // const accessToken = jwt.sign(user[0], JWT_SECRET, { expiresIn: "7d" });
+      // return response
+      //   .cookie("jwt", accessToken, {
+      //     httpOnly: true,
+      //     sameSite: "strict",
+      //     maxAge: 7 * 24 * 60 * 60 * 1000,
+      //   })
+      //   .status(200)
+      //   .json({});
+      return response.json({
+        success: true,
+        user: user[0],
+      });
+    } catch (error) {
+      //If getUserByEmail fail to call database.
       return response.json({
         success: false,
-        email: "Incorrect email.",
+        errors: {
+          root: "Log in failed. Please try again.",
+        },
       });
     }
-
-    const passwordMatches = await compare(result.data.password, user[0].password);
-    if (!passwordMatches) {
-      return response.json({
-        success: false,
-        password: "Incorrect password.",
-      });
-    }
-
-    // const accessToken = jwt.sign(user[0], JWT_SECRET, { expiresIn: "7d" });
-    // return response
-    //   .cookie("jwt", accessToken, {
-    //     httpOnly: true,
-    //     sameSite: "strict",
-    //     maxAge: 7 * 24 * 60 * 60 * 1000,
-    //   })
-    //   .status(200)
-    //   .json({});
-    return response.json({
-      success: true,
-      user: user[0],
-    });
   }
 
   const error = result.error.format();

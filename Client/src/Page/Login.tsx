@@ -65,7 +65,7 @@ export default function Register() {
         //Loop all result.errors.
         //Depends on setError so it can't be refactor to helpers.
         Object.keys(result.errors).forEach((key) => {
-          const field = key as keyof LoginFormFields;
+          const field = key as keyof LoginFormFields | "root";
           const errorMessage = result.errors[key as keyof ErrorMessages];
           setError(field, { message: errorMessage });
         });

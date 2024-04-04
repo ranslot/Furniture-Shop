@@ -70,7 +70,7 @@ export async function userRegister(request: Request, response: Response) {
         return response.json({
           success: false,
           errors: {
-            root: "Register failed. Try again.",
+            root: "Register failed. Please try again.",
           },
         });
       }
