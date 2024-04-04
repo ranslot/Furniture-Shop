@@ -1,4 +1,4 @@
-import { Redirect, useRoute } from "wouter";
+import { Link, Redirect, useRoute } from "wouter";
 import Login from "../Page/Login";
 import Register from "../Page/Register";
 
@@ -7,12 +7,22 @@ export default function Authentication() {
   const [_match, params] = useRoute("/auth/:page");
 
   if (params?.page === "login" || params?.page === "Login") {
-    return <Login></Login>;
+    return (
+      <div className="flex h-screen flex-col  items-center justify-center gap-10">
+        <Link to="/" className="text-4xl font-bold">
+          Home
+        </Link>
+        <Login></Login>
+      </div>
+    );
   }
 
   if (params?.page === "register" || params?.page === "Register") {
     return (
-      <div className="flex align-middle justify-center h-svh  ">
+      <div className="flex h-screen flex-col  items-center justify-center gap-10">
+        <Link to="/" className="text-4xl font-bold">
+          Home
+        </Link>
         <Register></Register>
       </div>
     );

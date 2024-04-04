@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { postData } from "../helpers/httpRequest";
 import { useMutation } from "@tanstack/react-query";
+import { Link, useLocation } from "wouter";
 
 const registerSchema = z
   .object({
@@ -27,19 +28,21 @@ const registerSchema = z
 
 type RegisterFormFields = z.infer<typeof registerSchema>;
 
-type RegisterSuccess = {
+type SuccessResponse = {
   success: true;
 };
-type RegisterFail = {
+type ErrorResponse = {
   success: false;
-  errors: {
-    errorName?: string;
-    errorEmail?: string;
-    errorPassword?: string;
-    errorConfirmPassword?: string;
-  };
+  errors: ErrorMessages;
 };
-type RegisterResponse = RegisterSuccess | RegisterFail;
+type ErrorMessages = {
+  name?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+};
+
+type RegisterResponse = SuccessResponse | ErrorResponse;
 
 export default function Register() {
   const {
@@ -49,19 +52,21 @@ export default function Register() {
     setError,
   } = useForm<RegisterFormFields>({ resolver: zodResolver(registerSchema) });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_location, setLocation] = useLocation();
+
   const mutation = useMutation({
     mutationFn: (data: RegisterFormFields) =>
       postData<RegisterFormFields>(data, "auth/register"),
     onSuccess(result: RegisterResponse) {
       if (result.success) {
-        console.log(result);
+        setLocation("/auth/login");
       } else {
-        //Loop all result.errors. depends on setError so it can't be refactor tp helpers
+        //Loop all result.errors.
+        //Depends on setError so it can't be refactor to helpers.
         Object.keys(result.errors).forEach((key) => {
-          const field = key
-            .replace("error", "")
-            .toLowerCase() as keyof RegisterFormFields;
-          const errorMessage = result.errors[key as keyof typeof result.errors];
+          const field = key as keyof RegisterFormFields | "root";
+          const errorMessage = result.errors[key as keyof ErrorMessages];
           setError(field, { message: errorMessage });
         });
       }
@@ -79,51 +84,109 @@ export default function Register() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       method="post"
-      className="w-[100%] max-w-md flex-row align-middle justify-center h-[100%] max-h-[500px] m-auto gap-3"
+      className="mx-auto flex h-[100%] max-h-[500px] w-[100%] max-w-md flex-col items-center justify-evenly rounded-lg border border-gray-700 p-4 shadow shadow-gray-700 md:h-screen lg:py-0"
     >
-      <div className="">
-        <label htmlFor="name">Username : </label>
-        <input className=" input-sm " {...register("name")} type="text" />
-        {errors?.name && <p className="text-error ">{errors?.name.message}</p>}
-      </div>
-      <div className="">
-        <label htmlFor="email">Email : </label>
-        <input className=" input-sm " {...register("email")} type="text" />
-        {errors?.email && (
-          <p className="text-error ">{errors?.email.message}</p>
+      <h1 className="mb-3 text-center text-3xl font-bold  text-white">
+        Register
+      </h1>
+      <div className="mx-5 flex w-full flex-col">
+        <label
+          htmlFor="name"
+          className=" input input-bordered flex items-center gap-2"
+        >
+          <input
+            className="grow"
+            {...register("name")}
+            type="text"
+            placeholder="Username"
+          />
+        </label>
+        {errors?.name ? (
+          <p className="ml-1 text-sm text-error">{errors?.name.message}</p>
+        ) : (
+          <p className="ml-1 text-sm text-error">&nbsp;</p>
         )}
       </div>
-      <div className="">
-        <label htmlFor="password">Password : </label>
-        <input
-          className=" input-sm"
-          {...register("password")}
-          type="password"
-        />
-        {errors?.password && (
-          <p className="text-error ">{errors?.password.message}</p>
+      <div className="mx-5 flex w-full flex-col">
+        <label
+          htmlFor="email"
+          className=" input input-bordered flex items-center gap-2"
+        >
+          <input
+            className="grow"
+            {...register("email")}
+            type="text"
+            placeholder="Email"
+          />
+        </label>
+        {errors?.email ? (
+          <p className="ml-1 text-sm text-error">{errors?.email.message}</p>
+        ) : (
+          <p className="ml-1 text-sm text-error">&nbsp;</p>
         )}
       </div>
-      <div className="">
-        <label htmlFor="confirmPassword">Confirm Password : </label>
-        <input
-          className=" input-sm"
-          {...register("confirmPassword")}
-          type="password"
-        />
-        {errors?.confirmPassword && (
-          <p className="text-error ">{errors?.confirmPassword.message}</p>
+      <div className="mx-5 flex w-full flex-col">
+        <label
+          htmlFor="password"
+          className=" input input-bordered flex items-center gap-2"
+        >
+          <input
+            className="grow"
+            {...register("password")}
+            type="password"
+            placeholder="Password"
+          />
+        </label>
+
+        {errors?.password ? (
+          <p className="ml-1 text-sm text-error">{errors.password.message}</p>
+        ) : (
+          <p className="ml-1 text-sm text-error">&nbsp;</p>
         )}
       </div>
-      <div className="flex align-middle justify-end pr-10">
+      <div className="mx-5 flex w-full flex-col">
+        <label
+          htmlFor="confirmPassword"
+          className="input input-bordered flex items-center gap-2"
+        >
+          <input
+            className="grow"
+            {...register("confirmPassword")}
+            type="password"
+            placeholder="Confirm Password"
+          />
+        </label>
+        {errors?.confirmPassword ? (
+          <p className="ml-1 text-sm text-error">
+            {errors?.confirmPassword.message}
+          </p>
+        ) : (
+          <p className="ml-1 text-sm text-error">&nbsp;</p>
+        )}
+      </div>
+      <div className="flex flex-col items-center">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="btn btn-square  btn-secondary "
+          className="btn btn-square  btn-primary btn-wide mx-auto text-lg"
         >
-          {isSubmitting ? "Loading..." : "Register"}
+          {isSubmitting ? (
+            <span className="loading loading-spinner text-primary"></span>
+          ) : (
+            "Register"
+          )}
         </button>
-        {errors?.root && <p className="text-error">{errors?.root?.message}</p>}
+        <p>
+          Already have an account?{" "}
+          <Link to="/auth/login" className="link link-primary">
+            Login
+          </Link>
+        </p>
+        {errors?.root ? (
+          <p className="ml-1 text-sm text-error">{errors?.root?.message}</p>
+        ) : (
+          <p className="ml-1 text-sm text-error">&nbsp;</p>
+        )}
       </div>
     </form>
   );

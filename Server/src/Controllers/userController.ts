@@ -1,21 +1,13 @@
 import { Request, Response } from "express";
-import {
-  deleteUser,
-  getAllUsers,
-  getUserById,
-  storeUser,
-  updateUser,
-} from "../Models/userModel";
+import { deleteUser, getAllUsers, getUserById, storeUser, updateUser } from "../Models/userModel";
 import { z } from "zod";
 import { hash } from "bcrypt";
+import { PostgresError } from "postgres";
 
 const registerSchema = z
   .object({
     name: z.string().min(1, { message: "Username is required" }),
-    email: z
-      .string()
-      .min(1, { message: "Email is required" })
-      .email({ message: "Invalid email address" }),
+    email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
     password: z
       .string()
       .min(1, { message: "Password is required" })
@@ -43,7 +35,7 @@ export function show(request: Request, response: Response) {
 }
 
 //register
-export async function store(request: Request, response: Response) {
+export async function update(request: Request, response: Response) {
   const data = request.body;
 
   // return response.json(storeUser<User>(data));
@@ -51,17 +43,38 @@ export async function store(request: Request, response: Response) {
 
 export async function userRegister(request: Request, response: Response) {
   const validation = registerSchema.safeParse(request.body);
+
   if (validation.success) {
     const { name, email, password } = validation.data;
     const hashPassword = await hash(password, 10);
-    // return response.json(updateUser({ name:name, email:email, password:hashPassword }));
-
-    return response.status(200).json({
-      success: true,
-      // errors: {
-      //   errorEmail: "Email already existed",
-      // },
-    });
+    try {
+      await storeUser({
+        name: name,
+        email: email,
+        password: hashPassword,
+      });
+      return response.status(200).json({
+        success: true,
+      });
+    } catch (err) {
+      //not an unique Email
+      if (err instanceof PostgresError && err.constraint_name === "user_email_unique") {
+        return response.json({
+          success: false,
+          errors: {
+            email: "Email already existed.",
+          },
+        });
+      } else {
+        //unknown error
+        return response.json({
+          success: false,
+          errors: {
+            root: "Register failed. Try again.",
+          },
+        });
+      }
+    }
   }
 
   const error = validation.error.format();

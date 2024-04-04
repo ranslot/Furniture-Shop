@@ -20,9 +20,9 @@ export function getUserByEmail(email: string) {
   return db.select().from(schema.user).where(eq(schema.user.email, email));
 }
 
-export function storeUser<User>(data: User) {}
+export function updateUser<User>(data: User) {}
 
-export function updateUser(data: UserRegister) {
+export function storeUser(data: UserRegister) {
   return db.insert(schema.user).values(data);
 }
 
