@@ -60,7 +60,8 @@ export default function Register() {
     onSuccess(result: LoginResponse) {
       if (result.success) {
         console.log(result.user);
-        //  setLocation("/");
+
+        setLocation("/");
       } else {
         //Loop all result.errors.
         //Depends on setError so it can't be refactor to helpers.

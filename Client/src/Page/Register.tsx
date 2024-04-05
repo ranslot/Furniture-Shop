@@ -84,9 +84,9 @@ export default function Register() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       method="post"
-      className="mx-auto flex h-[100%] max-h-[500px] w-[100%] max-w-md flex-col items-center justify-evenly rounded-lg border border-gray-700 p-4 shadow shadow-gray-700 md:h-screen lg:py-0"
+      className="card mx-auto flex h-[100%] max-h-[500px] w-[100%] max-w-md flex-col items-center justify-evenly border-[1px] p-4 shadow-xl md:h-screen lg:py-0"
     >
-      <h1 className="mb-3 text-center text-3xl font-bold  text-white">
+      <h1 className="my-3 text-center text-3xl font-bold text-primary">
         Register
       </h1>
       <div className="mx-5 flex w-full flex-col">

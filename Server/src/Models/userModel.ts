@@ -1,16 +1,21 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "./Schema/databaseSchema";
 import connection from "../../Database/conection";
-import DatabaseError from "../Errors/DatabaseError";
 import { eq, sql } from "drizzle-orm";
 
 const db = drizzle(connection, { schema });
 
-type UserRegister = {
+export type User = {
+  id: number;
   name: string;
   email: string;
   password: string;
+  isAdmin?: boolean;
+  createdAt?: Date;
+  modifiedAt?: Date;
 };
+
+export type UserRegister = Pick<User, "name" | "email" | "password">;
 
 export function getAllUsers() {}
 
