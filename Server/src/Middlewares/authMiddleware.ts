@@ -6,9 +6,10 @@ dotenv.config();
 
 export function checkAuthenticate(request: Request, response: Response, next: NextFunction) {
   if (request.isAuthenticated()) {
+    response.locals.user = request.user;
     return next();
   }
-  return response.sendStatus(401);
+  return next();
 }
 export function checkNotAuthenticated(request: Request, response: Response, next: NextFunction) {
   if (request.isAuthenticated()) {

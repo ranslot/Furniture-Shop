@@ -2,8 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { postData } from "../helpers/httpRequest";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
 
 const registerSchema = z.object({
   email: z
@@ -18,19 +19,9 @@ const registerSchema = z.object({
 
 type LoginFormFields = z.infer<typeof registerSchema>;
 
-type UserAuth = {
-  email: string;
-  password: string;
-  id: number;
-  name: string;
-  isAdmin?: boolean;
-  createdAt?: Date;
-  modifiedAt?: Date;
-};
-
 type SuccessResponse = {
   success: true;
-  user: UserAuth;
+  user: User;
 };
 type ErrorResponse = {
   success: false;
@@ -47,20 +38,22 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setError,
   } = useForm<LoginFormFields>({ resolver: zodResolver(registerSchema) });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_location, setLocation] = useLocation();
 
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
+
   const mutation = useMutation({
     mutationFn: (data: LoginFormFields) =>
       postData<LoginFormFields>(data, "auth/login"),
     onSuccess(result: LoginResponse) {
       if (result.success) {
-        console.log(result.user);
-
+        queryClient.invalidateQueries({ queryKey: ["user"] });
         setLocation("/");
       } else {
         //Loop all result.errors.
@@ -75,6 +68,9 @@ export default function Register() {
     onError() {
       setError("root", { message: "Connection failed." });
     },
+    onMutate() {
+      setIsLoading(true);
+    },
   });
 
   async function onSubmit(data: LoginFormFields) {
@@ -85,9 +81,9 @@ export default function Register() {
     <form
       onSubmit={handleSubmit(onSubmit)}
       method="post"
-      className="mx-auto flex h-[100%] max-h-[370px] w-[100%] max-w-md flex-col items-center justify-center gap-3 rounded-lg border border-gray-700 p-4 shadow shadow-gray-700 md:h-screen lg:py-0"
+      className="mx-auto flex h-[100%] max-h-[370px] w-[100%] max-w-md flex-col items-center justify-center gap-3 rounded-lg border-[1px] p-4 shadow-xl md:h-screen lg:py-0"
     >
-      <h1 className="mb-3 text-center text-3xl font-bold  text-white">
+      <h1 className="mb-3 text-center text-3xl font-bold  text-primary">
         Log in
       </h1>
       <div className="mx-5 flex w-full flex-col">
@@ -130,10 +126,10 @@ export default function Register() {
       <div className="flex flex-col items-center">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isLoading}
           className="btn btn-square  btn-primary btn-wide mx-auto text-lg"
         >
-          {isSubmitting ? (
+          {isLoading ? (
             <span className="loading loading-spinner text-primary"></span>
           ) : (
             "Log In"

@@ -1,10 +1,17 @@
 import { Link, Redirect, useRoute } from "wouter";
 import Login from "../Page/Login";
 import Register from "../Page/Register";
+import { UseQueryResult } from "@tanstack/react-query";
 
-export default function Authentication() {
+export default function AuthenticationLayout(
+  user: UseQueryResult<User, Error>,
+) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_match, params] = useRoute("/auth/:page");
+
+  if (user.data) {
+    return <Redirect to="/" />;
+  }
 
   if (params?.page === "login" || params?.page === "Login") {
     return (

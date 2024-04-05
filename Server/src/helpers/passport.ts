@@ -31,6 +31,6 @@ export default function passportInitialize(app: Express) {
 
   passport.deserializeUser(async (user: User, done) => {
     const u = await getUserByEmail(user.email);
-    return done(null, u[0]);
+    done(null, u[0]);
   });
 }

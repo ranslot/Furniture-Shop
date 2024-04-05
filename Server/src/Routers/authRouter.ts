@@ -1,6 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
 import { userRegister } from "../Controllers/userController";
-import { checkNotAuthenticated, loginValidate, registerValidate } from "../Middlewares/authMiddleware";
+import {
+  checkAuthenticate,
+  checkNotAuthenticated,
+  loginValidate,
+  registerValidate,
+} from "../Middlewares/authMiddleware";
 import passport from "passport";
 
 const authRouter = express.Router();
@@ -56,12 +61,29 @@ authRouter
           //Success
           return response.json({
             success: true,
+            user: user,
           });
         });
       }
     })(request, response); //Immediate function call
   })
-  .post("/logout", async (response: Response) => {})
+  .post("/logout", checkAuthenticate, async (request: Request, response: Response) => {
+    request.logOut({ keepSessionInfo: false }, function (err) {
+      //Connection fail
+      if (err) {
+        return response.json({
+          success: false,
+          errors: {
+            root: "Log out failed. Please try again.",
+          },
+        });
+      }
+      //Success
+      return response.json({
+        success: true,
+      });
+    });
+  })
   .post(
     "/register",
     checkNotAuthenticated,
