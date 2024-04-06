@@ -7,6 +7,8 @@ import homeRouter from "./Routers/homeRouter";
 import authRouter from "./Routers/authRouter";
 import session from "express-session";
 import passportInitialize from "./helpers/passport";
+import PGStore from "connect-pg-simple";
+import { connectionString } from "../Database/conection";
 
 //Setup
 dotenv.config();
@@ -26,11 +28,19 @@ app
   .use(express.urlencoded({ extended: true }))
   .use(
     session({
+      //store sesion on pg db
+      store: new (PGStore(session))({
+        conString: connectionString,
+        tableName: "user_sessions",
+        createTableIfMissing: true,
+      }),
       secret: AUTH_SECRET,
       resave: false,
       saveUninitialized: false,
+      cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, //7 days
     })
   );
+
 passportInitialize(app);
 
 //Routes
