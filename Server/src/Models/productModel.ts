@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "./Schema/databaseSchema";
-import connection from "../../Database/conection";
+import connection from "../../Database/connection";
 import { eq, sql } from "drizzle-orm";
 
 const db = drizzle(connection, { schema });

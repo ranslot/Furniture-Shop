@@ -8,7 +8,7 @@ import authRouter from "./Routers/authRouter";
 import session from "express-session";
 import passportInitialize from "./helpers/passport";
 import PGStore from "connect-pg-simple";
-import { connectionString } from "../Database/conection";
+import { connectionString } from "../Database/connection";
 
 //Setup
 dotenv.config();
