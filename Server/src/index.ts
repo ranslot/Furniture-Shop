@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import homeRouter from "./Routers/homeRouter";
 import authRouter from "./Routers/authRouter";
 import session from "express-session";
-import passportInitialize from "./helpers/passport";
+import passportInitialize from "./Utils/passport";
 import PGStore from "connect-pg-simple";
 import { connectionString } from "../Database/connection";
 

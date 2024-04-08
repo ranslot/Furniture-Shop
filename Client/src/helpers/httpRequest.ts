@@ -1,19 +1,19 @@
 const SERVER_URL = "http://localhost:3000/" as const;
 
 export async function getData(route: string = "") {
-  const response = await fetch(SERVER_URL + route);
-  return response.json();
+  const res = await fetch(SERVER_URL + route);
+  return res.json();
 }
 export async function getUserByToken(route: string = "") {
-  const response = await fetch(SERVER_URL + route, {
+  const res = await fetch(SERVER_URL + route, {
     method: "get",
     credentials: "include",
   });
-  return response.json();
+  return res.json();
 }
 
 export async function postData<T>(data: T, route: string = "") {
-  const response = await fetch(SERVER_URL + route, {
+  const res = await fetch(SERVER_URL + route, {
     method: "post",
     credentials: "include",
     body: JSON.stringify(data),
@@ -22,5 +22,5 @@ export async function postData<T>(data: T, route: string = "") {
     },
   });
 
-  return response.json();
+  return res.json();
 }

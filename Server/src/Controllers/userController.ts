@@ -10,24 +10,24 @@ import {
 import { hash } from "bcrypt";
 import { PostgresError } from "postgres";
 
-export function index(response: Response) {
-  return response.send(getAllUsers());
+export function index(res: Response) {
+  return res.send(getAllUsers());
 }
 
-export function show(request: Request, response: Response) {
-  const id = request.body.id;
-  return response.send(getUserById(id));
+export function show(req: Request, res: Response) {
+  const id = req.body.id;
+  return res.send(getUserById(id));
 }
 
-export async function update(request: Request, response: Response) {
-  const data = request.body;
+export async function update(req: Request, res: Response) {
+  const data = req.body;
 
-  // return response.json(storeUser<User>(data));
+  // return res.json(storeUser<User>(data));
 }
 
 //register
-export async function userRegister(request: Request, response: Response) {
-  const { name, email, password } = request.body as UserRegister;
+export async function userRegister(req: Request, res: Response) {
+  const { name, email, password } = req.body as UserRegister;
   const hashPassword = await hash(password, 10);
   try {
     await storeUser({
@@ -35,13 +35,13 @@ export async function userRegister(request: Request, response: Response) {
       email: email,
       password: hashPassword,
     });
-    return response.status(200).json({
+    return res.status(200).json({
       success: true,
     });
   } catch (err) {
     //not an unique Email
     if (err instanceof PostgresError && err.constraint_name === "user_email_unique") {
-      return response.json({
+      return res.json({
         success: false,
         errors: {
           email: "Email already existed.",
@@ -49,7 +49,7 @@ export async function userRegister(request: Request, response: Response) {
       });
     } else {
       //unknown error
-      return response.json({
+      return res.json({
         success: false,
         errors: {
           root: "Register failed. Please try again.",
@@ -59,7 +59,7 @@ export async function userRegister(request: Request, response: Response) {
   }
 }
 
-export function destroy(request: Request, response: Response) {
-  const id = request.body.id;
-  return response.send(deleteUser(id));
+export function destroy(req: Request, res: Response) {
+  const id = req.body.id;
+  return res.send(deleteUser(id));
 }
