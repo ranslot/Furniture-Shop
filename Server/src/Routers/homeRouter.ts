@@ -5,11 +5,9 @@ const homeRouter = express.Router();
 
 homeRouter.get("/", checkAuthenticate, (req: Request, res: Response) => {
   if (!req.user || !res.locals.perm) {
-    return res.json();
+    return res.json("Guest");
   }
-  if (req.user) {
-    return res.json(req.user);
-  }
+
   return res.json(req.user);
 });
 

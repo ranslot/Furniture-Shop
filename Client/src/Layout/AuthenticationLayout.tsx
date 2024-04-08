@@ -1,15 +1,19 @@
 import { Link, Redirect, useRoute } from "wouter";
 import Login from "../Page/Login";
 import Register from "../Page/Register";
-import { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { getDataWithAutorization } from "../Utils/httpRequest";
 
-export default function AuthenticationLayout(
-  user: UseQueryResult<User, Error>,
-) {
+export default function AuthenticationLayout() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_match, params] = useRoute("/auth/:page");
 
-  if (user.data) {
+  const { data } = useQuery<User | string>({
+    queryKey: ["user"],
+    queryFn: () => getDataWithAutorization(),
+  });
+
+  if (typeof data !== "string") {
     return <Redirect to="/" />;
   }
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { userRegister } from "../Controllers/userController";
+import { handleUserRegister } from "../Controllers/userController";
 import {
   checkAuthenticate,
   checkNotAuthenticated,
@@ -14,6 +14,6 @@ authRouter
   //Login
   .post("/login", checkNotAuthenticated, loginValidate, handlePassportAuthentication)
   .post("/logout", checkAuthenticate, handlePassportLogout)
-  .post("/register", checkNotAuthenticated, registerValidate, userRegister);
+  .post("/register", checkNotAuthenticated, registerValidate, handleUserRegister);
 
 export default authRouter;
