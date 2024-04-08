@@ -26,7 +26,7 @@ export async function update(req: Request, res: Response) {
 }
 
 //register
-export async function userRegister(req: Request, res: Response) {
+export async function handleUserRegister(req: Request, res: Response) {
   const { name, email, password } = req.body as UserRegister;
   const hashPassword = await hash(password, 10);
   try {

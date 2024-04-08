@@ -1,9 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { postData } from "../helpers/httpRequest";
+import { postData } from "../Utils/httpRequest";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
+import { useState } from "react";
 
 const registerSchema = z
   .object({
@@ -48,17 +49,19 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setError,
   } = useForm<RegisterFormFields>({ resolver: zodResolver(registerSchema) });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_location, setLocation] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const mutation = useMutation({
     mutationFn: (data: RegisterFormFields) =>
       postData<RegisterFormFields>(data, "auth/register"),
     onSuccess(result: RegisterResponse) {
+      setIsLoading(false);
       if (result.success) {
         setLocation("/auth/login");
       } else {
@@ -72,7 +75,11 @@ export default function Register() {
       }
     },
     onError() {
+      setIsLoading(false);
       setError("root", { message: "Connection failed." });
+    },
+    onMutate() {
+      setIsLoading(true);
     },
   });
 
@@ -167,10 +174,10 @@ export default function Register() {
       <div className="flex flex-col items-center">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isLoading}
           className="btn btn-square  btn-primary btn-wide mx-auto text-lg"
         >
-          {isSubmitting ? (
+          {isLoading ? (
             <span className="loading loading-spinner text-primary"></span>
           ) : (
             "Register"
