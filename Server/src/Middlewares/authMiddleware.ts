@@ -7,7 +7,7 @@ dotenv.config();
 export function checkAuthenticate(req: Request, res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {
     res.locals.perm = true;
-    return next(req.user);
+    return next();
   }
   return next();
 }

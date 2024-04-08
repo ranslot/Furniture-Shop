@@ -52,6 +52,7 @@ export default function Register() {
     mutationFn: (data: LoginFormFields) =>
       postData<LoginFormFields>(data, "auth/login"),
     onSuccess(result: LoginResponse) {
+      setIsLoading(false);
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: ["user"] });
         setLocation("/");
@@ -66,6 +67,7 @@ export default function Register() {
       }
     },
     onError() {
+      setIsLoading(false);
       setError("root", { message: "Connection failed." });
     },
     onMutate() {

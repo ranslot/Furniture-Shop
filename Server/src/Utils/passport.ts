@@ -51,7 +51,7 @@ export function handlePassportAuthentication(req: Request, res: Response) {
         return res.json({ success: true, user });
       });
     }
-  });
+  })(req, res); //immediate invoke function to send req, res to authenticate
 }
 
 export function handlePassportLogout(req: Request, res: Response) {
