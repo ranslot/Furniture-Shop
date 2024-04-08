@@ -1,11 +1,15 @@
 export default function CartDropdown() {
   return (
     <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="btn btn-circle btn-ghost">
+      <button
+        tabIndex={0}
+        role="button"
+        className="btn btn-circle btn-ghost w-[90px]"
+      >
         <div className="indicator">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
+            className="h-7 w-7"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -19,7 +23,7 @@ export default function CartDropdown() {
           </svg>
           <span className="badge indicator-item badge-sm">8</span>
         </div>
-      </div>
+      </button>
       <div
         tabIndex={0}
         className="card dropdown-content card-compact z-[1] mt-3 w-52 bg-base-100 shadow"
