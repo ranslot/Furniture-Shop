@@ -8,12 +8,12 @@ export default function AuthenticationLayout() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_match, params] = useRoute("/auth/:page");
 
-  const { data } = useQuery<User>({
+  const { data } = useQuery<User | string>({
     queryKey: ["user"],
     queryFn: () => getDataWithAutorization(),
   });
 
-  if (data) {
+  if (typeof data !== "string") {
     return <Redirect to="/" />;
   }
 
