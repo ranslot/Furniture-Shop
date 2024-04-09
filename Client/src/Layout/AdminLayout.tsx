@@ -38,17 +38,15 @@ export default function AdminLayout() {
         </header>
         <Suspense fallback={<Loading />}>
           <SideBar>
-            <main>
-              <Switch>
-                <Route path="/" component={Dashboard} />
-                <Route path="/payment" component={PaymentAdminDashboard} />
-                <Route path="/product" component={ProductAdminDashboard} />
-                <Route path="/user" component={UserAdminDashboard} />
-                <Route>
-                  <Redirect to="/" />
-                </Route>
-              </Switch>
-            </main>
+            <Switch>
+              <Route path="/" component={Dashboard} />
+              <Route path="/payments" component={PaymentAdminDashboard} nest />
+              <Route path="/products" component={ProductAdminDashboard} nest />
+              <Route path="/users" component={UserAdminDashboard} nest />
+              <Route>
+                <Redirect to="/" />
+              </Route>
+            </Switch>
           </SideBar>
         </Suspense>
       </>

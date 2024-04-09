@@ -20,7 +20,7 @@ export default function SideBar({ children }: PropsWithChildren) {
           </li>
           <li>
             <button
-              onClick={() => setLocation("/product")}
+              onClick={() => setLocation("/products")}
               className="text-lg font-bold "
             >
               Products
@@ -28,7 +28,7 @@ export default function SideBar({ children }: PropsWithChildren) {
           </li>
           <li>
             <button
-              onClick={() => setLocation("/payment")}
+              onClick={() => setLocation("/payments")}
               className="text-lg font-bold "
             >
               Payments
@@ -37,7 +37,7 @@ export default function SideBar({ children }: PropsWithChildren) {
 
           <li>
             <button
-              onClick={() => setLocation("/user")}
+              onClick={() => setLocation("/users")}
               className="text-lg font-bold "
             >
               Users
