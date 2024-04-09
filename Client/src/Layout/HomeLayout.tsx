@@ -3,7 +3,7 @@ import { getDataWithAutorization } from "../Utils/httpRequest";
 import Navigation from "../Components/Navigation";
 import Loading from "../Components/Loading";
 import Home from "../Page/Home";
-import Dashboard from "../Page/Admin/Dashboard";
+import { Redirect } from "wouter";
 
 type UserRole = {
   user: User | null;
@@ -20,15 +20,9 @@ export default function HomeLayout() {
 
   if (error) return "An error has occurred: " + error.message;
 
-  if (data.isUser && data.user && data.user.isAdmin) {
-    return (
-      <>
-        <Navigation user={data.user} />
-        <div className="mt-[64px] ">
-          <Dashboard />
-        </div>
-      </>
-    );
+  if (data.user && data.user.isAdmin) {
+    //Admin
+    return <Redirect to="/admin" />;
   } else {
     // User or Guest
     return (

@@ -8,7 +8,7 @@ type NavigationProps = {
 
 export default function Navigation({ user }: NavigationProps) {
   return (
-    <nav className="navbar absolute top-0 border bg-base-100 px-6 shadow-sm">
+    <nav className="navbar fixed top-0 z-40 border bg-base-100 px-6 shadow-sm">
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost text-xl">
           Home

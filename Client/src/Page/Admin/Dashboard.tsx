@@ -1,5 +1,5 @@
 export default function Dashboard() {
   console.log("Dashboard");
 
-  return <>Dashboard</>;
+  return <div className="btn drawer-button">Dashboard</div>;
 }
