@@ -1,15 +1,27 @@
 import { Redirect, Route, Switch } from "wouter";
-import AuthenticationLayout from "./Layout/AuthenticationLayout";
-import AppLayout from "./Layout/AppLayout";
+import { Suspense, lazy } from "react";
+
+import Loading from "./Components/Loading";
+
+const AuthenticationLayout = lazy(
+  () => import("./Layout/AuthenticationLayout"),
+);
+const HomeLayout = lazy(() => import("./Layout/HomeLayout"));
+const ProductLayout = lazy(() => import("./Layout/ProductLayout"));
+const UserLayout = lazy(() => import("./Layout/UserLayout"));
 
 export default function App() {
   return (
-    <Switch>
-      <Route path="/" component={AppLayout} />
-      <Route path="/auth/:page" component={AuthenticationLayout} />
-      <Route>
-        <Redirect to="/" />
-      </Route>
-    </Switch>
+    <Suspense fallback={<Loading />}>
+      <Switch>
+        <Route path="/" component={HomeLayout} />
+        <Route path="/auth/:page" component={AuthenticationLayout} />
+        <Route path="/product/:id" component={ProductLayout} />
+        <Route path="/user/:id" component={UserLayout} />
+        <Route>
+          <Redirect to="/" />
+        </Route>
+      </Switch>
+    </Suspense>
   );
 }

@@ -4,16 +4,21 @@ import Register from "../Page/Register";
 import { useQuery } from "@tanstack/react-query";
 import { getDataWithAutorization } from "../Utils/httpRequest";
 
+type UserRole = {
+  user: User | null;
+  isUser: boolean;
+};
+
 export default function AuthenticationLayout() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_match, params] = useRoute("/auth/:page");
 
-  const { data } = useQuery<User | string>({
+  const { data } = useQuery<UserRole>({
     queryKey: ["user"],
     queryFn: () => getDataWithAutorization(),
   });
 
-  if (typeof data !== "string") {
+  if (data?.isUser) {
     return <Redirect to="/" />;
   }
 
