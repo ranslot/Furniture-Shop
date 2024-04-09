@@ -6,6 +6,7 @@ export default function ProductIndex() {
     <>
       ProductIndex
       <Link to="/add">add product</Link>
+      <Link to={`/edit/${pid}`}>Edit product</Link>
       <Link to={`/${pid}`}>Show product</Link>
     </>
   );

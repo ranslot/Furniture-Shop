@@ -28,7 +28,7 @@ export default function HomeLayout() {
     return (
       <>
         <Navigation user={data.user} />
-        <div className="mt-[64px]">
+        <div className="pt-[64px]">
           <Home />
         </div>
       </>

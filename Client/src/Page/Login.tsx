@@ -5,7 +5,7 @@ import { postData } from "../Utils/httpRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 
-const registerSchema = z.object({
+const loginSchema = z.object({
   email: z
     .string()
     .min(1, { message: "Email is required." })
@@ -16,7 +16,7 @@ const registerSchema = z.object({
     .min(8, { message: "Password must be longer than 8 character." }),
 });
 
-type LoginFormFields = z.infer<typeof registerSchema>;
+type LoginFormFields = z.infer<typeof loginSchema>;
 
 type LoginSuccess = {
   success: true;
@@ -39,7 +39,7 @@ export default function Register() {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<LoginFormFields>({ resolver: zodResolver(registerSchema) });
+  } = useForm<LoginFormFields>({ resolver: zodResolver(loginSchema) });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_location, setLocation] = useLocation();

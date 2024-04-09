@@ -1,13 +1,4 @@
-import {
-  pgTable,
-  serial,
-  varchar,
-  timestamp,
-  boolean,
-  integer,
-  text,
-  pgSchema,
-} from "drizzle-orm/pg-core";
+import { pgTable, serial, varchar, timestamp, boolean, integer, text, pgSchema } from "drizzle-orm/pg-core";
 
 export const Furniture_Shop_Schema = pgSchema("Furniture_Shop");
 
@@ -79,6 +70,17 @@ export const paymentDetails = pgTable("payment_details", {
   token: varchar("token", { length: 255 }).notNull(),
   status: varchar("status", { length: 255 }).notNull(),
   amount: integer("amount").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  modifiedAt: timestamp("modified_at").defaultNow(),
+});
+
+export const productImg = pgTable("product_img", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id")
+    .references(() => product.id)
+    .notNull()
+    .unique(),
+  imageUrl: varchar("imageUrl", { length: 1024 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   modifiedAt: timestamp("modified_at").defaultNow(),
 });
