@@ -4,7 +4,6 @@ import { z } from "zod";
 import { postData } from "../Utils/httpRequest";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-import { useState } from "react";
 
 const registerSchema = z
   .object({
@@ -29,21 +28,21 @@ const registerSchema = z
 
 type RegisterFormFields = z.infer<typeof registerSchema>;
 
-type SuccessResponse = {
+type RegisterSuccess = {
   success: true;
 };
-type ErrorResponse = {
+type RegisterError = {
   success: false;
-  errors: ErrorMessages;
+  errors: RegisterErrorMessages;
 };
-type ErrorMessages = {
+type RegisterErrorMessages = {
   name?: string;
   email?: string;
   password?: string;
   confirmPassword?: string;
 };
 
-type RegisterResponse = SuccessResponse | ErrorResponse;
+type RegisterResponse = RegisterSuccess | RegisterError;
 
 export default function Register() {
   const {
@@ -55,36 +54,31 @@ export default function Register() {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_location, setLocation] = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const mutation = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (data: RegisterFormFields) =>
       postData<RegisterFormFields>(data, "auth/register"),
     onSuccess(result: RegisterResponse) {
-      setIsLoading(false);
       if (result.success) {
         setLocation("/auth/login");
       } else {
         //Loop all result.errors.
-        //Depends on setError so it can't be refactor to helpers.
+        //Depends on setError so it can't be refactor to Utils.
         Object.keys(result.errors).forEach((key) => {
           const field = key as keyof RegisterFormFields | "root";
-          const errorMessage = result.errors[key as keyof ErrorMessages];
+          const errorMessage =
+            result.errors[key as keyof RegisterErrorMessages];
           setError(field, { message: errorMessage });
         });
       }
     },
     onError() {
-      setIsLoading(false);
       setError("root", { message: "Connection failed." });
-    },
-    onMutate() {
-      setIsLoading(true);
     },
   });
 
   async function onSubmit(data: RegisterFormFields) {
-    mutation.mutate(data);
+    mutate(data);
   }
 
   return (
@@ -174,10 +168,10 @@ export default function Register() {
       <div className="flex flex-col items-center">
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isPending}
           className="btn btn-square  btn-primary btn-wide mx-auto text-lg"
         >
-          {isLoading ? (
+          {isPending ? (
             <span className="loading loading-spinner text-primary"></span>
           ) : (
             "Register"
