@@ -36,6 +36,13 @@
       "when": 1712053657728,
       "tag": "0004_mature_iron_fist",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1712654679310,
+      "tag": "0005_flippant_stellaris",
+      "breakpoints": true
     }
   ]
 }
