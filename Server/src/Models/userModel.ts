@@ -5,8 +5,6 @@ import { eq, sql } from "drizzle-orm";
 
 const db = drizzle(connection, { schema });
 
-export type UserRegister = Pick<User, "name" | "email" | "password">;
-
 export function getAllUsers() {}
 
 export function getUserById(id: number) {}

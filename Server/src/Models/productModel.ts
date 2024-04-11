@@ -11,7 +11,9 @@ export function getProductById(id: number) {}
 
 export function getProductByCategory(category: string) {}
 
-export function createProduct<T>(data: T) {}
+export function storeProduct<T>(data: T) {
+  return;
+}
 
 export function updateProduct<T>(data: T) {}
 

@@ -1,12 +1,5 @@
 import { Request, Response } from "express";
-import {
-  UserRegister,
-  deleteUser,
-  getAllUsers,
-  getUserById,
-  storeUser,
-  updateUser,
-} from "../Models/userModel";
+import { deleteUser, getAllUsers, getUserById, storeUser, updateUser } from "../Models/userModel";
 import { hash } from "bcrypt";
 import { PostgresError } from "postgres";
 

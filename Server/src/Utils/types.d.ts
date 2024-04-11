@@ -19,3 +19,5 @@ declare type User = {
   createdAt: Date | null;
   modifiedAt: Date | null;
 };
+
+declare type UserRegister = Pick<User, "name" | "email" | "password">;

@@ -1,11 +1,7 @@
 import express from "express";
 import { handleUserRegister } from "../Controllers/userController";
-import {
-  checkAuthenticate,
-  checkNotAuthenticated,
-  loginValidate,
-  registerValidate,
-} from "../Middlewares/authMiddleware";
+import { checkAuthenticate, checkNotAuthenticated } from "../Middlewares/authMiddleware";
+import { loginValidate, registerValidate } from "../Middlewares/zodValidationMiddleware";
 import { handlePassportAuthentication, handlePassportLogout } from "../Utils/passport";
 
 const authRouter = express.Router();

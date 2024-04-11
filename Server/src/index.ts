@@ -9,6 +9,7 @@ import session from "express-session";
 import passportInitialize from "./Utils/passport";
 import PGStore from "connect-pg-simple";
 import { connectionString } from "../Database/connection";
+import productRouter from "./Routers/productRouter";
 
 //Setup
 dotenv.config();
@@ -44,7 +45,7 @@ app
 passportInitialize(app);
 
 //Routes
-app.use("/", homeRouter).use("/auth", authRouter);
+app.use("/", homeRouter).use("/auth", authRouter).use("/product", productRouter);
 
 //Run
 app.listen(SERVER_PORT, () => {

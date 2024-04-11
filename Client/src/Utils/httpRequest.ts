@@ -24,3 +24,13 @@ export async function postData<T>(data: T, route: string = "") {
 
   return res.json();
 }
+
+export async function postDataWithFiles(data: FormData, route: string = "") {
+  const res = await fetch(SERVER_URL + route, {
+    method: "post",
+    credentials: "include",
+    body: data,
+  });
+
+  return res.json();
+}
