@@ -8,6 +8,10 @@ declare namespace Express {
     createdAt: Date | null;
     modifiedAt: Date | null;
   }
+  interface Locals {
+    imgNames: string[];
+    perm: boolean;
+  }
 }
 
 declare type User = {
@@ -21,3 +25,13 @@ declare type User = {
 };
 
 declare type UserRegister = Pick<User, "name" | "email" | "password">;
+
+declare type Product = {
+  sku: string;
+  name: string;
+  category: string;
+  price: number;
+  quantity: number;
+  productImage: Express.Multer.File[];
+  description?: string | null;
+};

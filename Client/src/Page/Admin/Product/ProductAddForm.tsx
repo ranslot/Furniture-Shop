@@ -137,10 +137,15 @@ export default function ProductAddForm() {
 
   return (
     <>
-      <Link to="/">back to products</Link>
+      <Link
+        to="/"
+        className=" btn btn-circle btn-ghost m-3 w-36 text-gray-500 underline "
+      >
+        Back to products
+      </Link>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex max-w-full flex-col"
+        className="mx-auto flex w-full max-w-[700px] flex-col"
         encType="multipart/form-data"
       >
         <h1 className="mb-3 text-center text-3xl font-bold  text-primary">
@@ -261,6 +266,7 @@ export default function ProductAddForm() {
           )}
         </div>
         <div className="mx-5 flex flex-col">
+          <h3 className=" mb-1 text-center font-semibold">Product Images</h3>
           <label
             htmlFor="Product Image"
             className=" input input-bordered flex items-center gap-2"
@@ -273,7 +279,6 @@ export default function ProductAddForm() {
               image/jpg,
               image/png,
               image/webp"
-              placeholder="Product Image"
               multiple
             />
           </label>
@@ -296,6 +301,11 @@ export default function ProductAddForm() {
             "Add product"
           )}
         </button>
+        {errors?.root ? (
+          <p className="ml-1 text-sm text-error">{errors?.root?.message}</p>
+        ) : (
+          <p className="ml-1 text-sm text-error">&nbsp;</p>
+        )}
       </form>
     </>
   );

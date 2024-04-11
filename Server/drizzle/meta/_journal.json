@@ -43,6 +43,20 @@
       "when": 1712654679310,
       "tag": "0005_flippant_stellaris",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1712831007487,
+      "tag": "0006_sad_fixer",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1712834912866,
+      "tag": "0007_awesome_firelord",
+      "breakpoints": true
     }
   ]
 }

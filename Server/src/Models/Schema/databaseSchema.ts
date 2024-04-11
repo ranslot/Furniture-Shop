@@ -78,9 +78,8 @@ export const productImg = pgTable("product_img", {
   id: serial("id").primaryKey(),
   productId: integer("product_id")
     .references(() => product.id)
-    .notNull()
-    .unique(),
-  imageUrl: varchar("imageUrl", { length: 1024 }).notNull(),
+    .notNull(),
+  imageName: varchar("imageName", { length: 1024 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   modifiedAt: timestamp("modified_at").defaultNow(),
 });
