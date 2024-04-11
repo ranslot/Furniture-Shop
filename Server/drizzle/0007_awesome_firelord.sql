@@ -1,0 +1,1 @@
+ALTER TABLE "product_img" DROP CONSTRAINT "product_img_product_id_unique";

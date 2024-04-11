@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 
-export default function ProductEdit() {
+export default function ProductEditForm() {
   return (
     <>
       <Link to="/">back to products</Link>
