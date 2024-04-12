@@ -10,6 +10,7 @@ declare namespace Express {
   }
   interface Locals {
     imgNames: string[];
+    productId: number;
     perm: boolean;
   }
 }

@@ -1,27 +1,24 @@
 import { Request, Response } from "express";
-import { storeProduct } from "../Models/productModel";
-import { PostgresError } from "postgres";
+import { storeProductData, storeProductImg } from "../Models/productModel";
 
-export async function handleProductAdd(req: Request, res: Response) {
-  try {
-    await storeProduct(req.body, res.locals.imgNames);
+export async function handleProductImg(req: Request, res: Response) {
+  const result = await storeProductImg(res.locals.imgNames, res.locals.productId);
+  if (result.success) {
     return res.json({ success: true });
-  } catch (error) {
-    console.error(error);
-    if (error instanceof PostgresError && error.constraint_name === "user_sku_unique") {
-      return res.json({
-        success: false,
-        errors: {
-          sku: "SKU already existed.",
-        },
-      });
-    } else {
-      return res.json({
-        success: false,
-        errors: {
-          root: "Add Product failed. Please try again.",
-        },
-      });
-    }
+  }
+  if (result.productImgError) {
+    return res.json({
+      success: false,
+      errors: {
+        sku: "Add Product Images failed.",
+      },
+    });
+  } else {
+    return res.json({
+      success: false,
+      errors: {
+        root: "Add Product Images failed. Please try again.",
+      },
+    });
   }
 }

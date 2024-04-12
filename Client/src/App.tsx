@@ -1,7 +1,9 @@
 import { Redirect, Route, Switch } from "wouter";
 import { Suspense, lazy } from "react";
-import HomeLayout from "./Layout/HomeLayout";
+
 import Loading from "./Components/Loading";
+
+import HomeLayout from "./Layout/HomeLayout";
 
 const AdminLayout = lazy(() => import("./Layout/AdminLayout"));
 const AuthenticationLayout = lazy(
@@ -15,9 +17,7 @@ export default function App() {
     <Suspense fallback={<Loading />}>
       <Switch>
         <Route path="/" component={HomeLayout} />
-        <Route path="/admin" nest>
-          <AdminLayout />
-        </Route>
+        <Route path="/admin" component={AdminLayout} nest />
         <Route path="/auth/:page" component={AuthenticationLayout} />
         <Route path="/product/:id" component={ProductLayout} />
         <Route path="/user/:id" component={UserLayout} />
