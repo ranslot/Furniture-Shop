@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDataWithAutorization } from "../Utils/httpRequest";
+import { Redirect } from "wouter";
+
 import Navigation from "../Components/Navigation";
 import Loading from "../Components/Loading";
+
 import Home from "../Page/Home";
-import { Redirect } from "wouter";
 
 type UserRole = {
   user: User | null;

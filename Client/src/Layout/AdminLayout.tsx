@@ -1,11 +1,13 @@
 import { Redirect, Route, Switch } from "wouter";
-import SideBar from "../Components/SideBar";
-import Dashboard from "../Page/Admin/Dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { getDataWithAutorization } from "../Utils/httpRequest";
 import { Suspense, lazy } from "react";
+
+import SideBar from "../Components/SideBar";
 import Loading from "../Components/Loading";
 import Navigation from "../Components/Navigation";
+
+import Dashboard from "../Page/Admin/Dashboard";
 
 const ProductAdminDashboard = lazy(
   () => import("../Page/Admin/ProductAdminDashboard"),
@@ -22,14 +24,18 @@ type AdminUserData = {
 };
 
 export default function AdminLayout() {
-  const { data, error } = useQuery<AdminUserData>({
+  const { data, error, isLoading } = useQuery<AdminUserData>({
     queryKey: ["user"],
     queryFn: () => getDataWithAutorization(),
   });
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   if (!data || !data.user.isAdmin || error) {
     // Absolute path with ~
-    return <Redirect to="~/" />;
+    return <Redirect to="~/home" />;
   } else {
     return (
       <>

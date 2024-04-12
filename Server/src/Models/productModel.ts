@@ -12,44 +12,60 @@ export function getProductById(id: number) {}
 
 export function getProductByCategory(category: string) {}
 
-export function storeProduct(data: Omit<Product, "productImage">, imgNames: string[]) {
-  return db.transaction(async (tx) => {
-    try {
-      let category = await tx
-        .insert(schema.category)
-        .values({ name: data.category })
-        .onConflictDoNothing()
-        .returning({ categoryId: schema.category.id });
+export async function storeProductData(data: Omit<Product, "productImage">) {
+  const result = { success: false, productError: false, databaseError: false, productId: 0 };
 
-      if (category.length === 0) {
-        category = await tx
-          .select({ categoryId: schema.category.id })
-          .from(schema.category)
-          .where(eq(schema.category.name, data.category));
-      }
+  try {
+    let category = await db
+      .insert(schema.category)
+      .values({ name: data.category })
+      .onConflictDoNothing()
+      .returning({ categoryId: schema.category.id });
 
-      try {
-        const product = await tx
-          .insert(schema.product)
-          .values({
-            categoryId: category[0].categoryId,
-            sku: data.sku,
-            name: data.name,
-            price: data.price,
-            quantity: data.quantity,
-            description: data.description,
-          })
-          .returning({ productId: schema.product.id });
-        for (const imgName of imgNames) {
-          await tx.insert(schema.productImg).values({ productId: product[0].productId, imageName: imgName });
-        }
-      } catch (error) {
-        throw new PostgresError("SKU already existed");
-      }
-    } catch (error) {
-      tx.rollback();
+    if (category.length === 0) {
+      category = await db
+        .select({ categoryId: schema.category.id })
+        .from(schema.category)
+        .where(eq(schema.category.name, data.category));
     }
-  });
+
+    const product = await db
+      .insert(schema.product)
+      .values({
+        categoryId: category[0].categoryId,
+        sku: data.sku,
+        name: data.name,
+        price: data.price,
+        quantity: data.quantity,
+        description: data.description,
+      })
+      .returning({ productId: schema.product.id });
+
+    result.success = true;
+    result.productId = product[0].productId;
+    //
+  } catch (error) {
+    if (error instanceof PostgresError && error.constraint_name === "product_SKU_unique") {
+      result.productError = true;
+    } else {
+      result.databaseError = true;
+    }
+  }
+
+  return result;
+}
+
+export async function storeProductImg(imgNames: string[], productId: number) {
+  const result = { success: false, productImgError: false };
+  try {
+    for (const imgName of imgNames) {
+      await db.insert(schema.productImg).values({ productId: productId, imageName: imgName });
+    }
+    result.success = true;
+  } catch (error) {
+    result.productImgError = true;
+  }
+  return result;
 }
 
 export function updateProduct<T>(data: T) {}
