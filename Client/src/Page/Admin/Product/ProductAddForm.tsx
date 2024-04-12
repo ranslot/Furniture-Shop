@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation } from "wouter";
 import { z } from "zod";
 import { postDataWithFiles } from "../../../Utils/httpRequest";
+import useAlertStore from "../../../Utils/store";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -84,6 +85,8 @@ export default function ProductAddForm() {
     resolver: zodResolver(productStoreSchema),
   });
 
+  const { showAlert } = useAlertStore();
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_location, setLocation] = useLocation();
 
@@ -94,9 +97,9 @@ export default function ProductAddForm() {
     onSuccess(result: ProductStoreResponse) {
       if (result.success) {
         queryClient.invalidateQueries({ queryKey: ["product"] });
-        console.log("Yippee");
-
-        // setLocation("/");
+        console.log("Add product success");
+        showAlert("Add product success", false);
+        setLocation("/");
       } else {
         Object.keys(result.errors).forEach((key) => {
           const field = key as keyof ProductStoreFormFields | "root";
