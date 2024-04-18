@@ -45,7 +45,10 @@ app
 passportInitialize(app);
 
 //Routes
-app.use("/", homeRouter).use("/auth", authRouter).use("/product", productRouter);
+app
+  .use("/", homeRouter)
+  .use("/auth", authRouter)
+  .use("/product", productRouter);
 
 //Run
 app.listen(SERVER_PORT, () => {

@@ -7,3 +7,13 @@ declare type User = {
   createdAt?: Date;
   modifiedAt?: Date;
 };
+
+declare type Product = {
+  sku: string;
+  name: string;
+  category: string;
+  price: number;
+  quantity: number;
+  productImage: string[];
+  description?: string | null;
+};
