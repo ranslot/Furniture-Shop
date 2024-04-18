@@ -18,7 +18,11 @@ const s3 = new S3Client({
   region: AWS_REGION,
 });
 
-export async function sendImageToS3(req: Request, res: Response, next: NextFunction) {
+export async function sendImageToS3(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   if (!req.files) {
     return res.json({ success: false, errors: { root: "Images not found" } });
   }
@@ -48,6 +52,9 @@ export async function sendImageToS3(req: Request, res: Response, next: NextFunct
     next();
   } catch (error) {
     console.error(error);
-    return res.json({ success: false, errors: { root: "Images upload failed" } });
+    return res.json({
+      success: false,
+      errors: { root: "Images upload failed" },
+    });
   }
 }
