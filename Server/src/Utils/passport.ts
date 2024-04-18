@@ -36,31 +36,52 @@ export default function passportInitialize(app: Express) {
 }
 
 export function handlePassportAuthentication(req: Request, res: Response) {
-  passport.authenticate("local", (err: Error | null, user: Express.User, info: any) => {
-    if (!user && info.message === "email") {
-      return res.json({ success: false, errors: { email: "No user with that email" } });
-    } else if (!user && info.message === "password") {
-      return res.json({ success: false, errors: { password: "Password incorrect" } });
-    } else if (err) {
-      return res.json({ success: false, errors: { root: "Log in failed. Please try again." } });
-    } else {
-      req.logIn(user, (err) => {
-        if (err) {
-          return res.json({ success: false, errors: { root: "Log in failed. Please try again." } });
-        }
-        return res.json({ success: true, user });
-      });
+  passport.authenticate(
+    "local",
+    (err: Error | null, user: Express.User, info: any) => {
+      if (!user && info.message === "email") {
+        return res.json({
+          success: false,
+          errors: { email: "No user with that email" },
+        });
+      } else if (!user && info.message === "password") {
+        return res.json({
+          success: false,
+          errors: { password: "Password incorrect" },
+        });
+      } else if (err) {
+        return res.json({
+          success: false,
+          errors: { root: "Log in failed. Please try again." },
+        });
+      } else {
+        req.logIn(user, (err) => {
+          if (err) {
+            return res.json({
+              success: false,
+              errors: { root: "Log in failed. Please try again." },
+            });
+          }
+          return res.json({ success: true, user });
+        });
+      }
     }
-  })(req, res); //immediate invoke function to send req, res to authenticate
+  )(req, res); //immediate invoke function to send req, res to authenticate
 }
 
 export function handlePassportLogout(req: Request, res: Response) {
   if (!res.locals.perm) {
-    return res.json({ success: false, errors: { root: "You don't have permission." } });
+    return res.json({
+      success: false,
+      errors: { root: "You don't have permission." },
+    });
   }
   req.logOut({ keepSessionInfo: false }, (err: Error | null) => {
     if (err) {
-      return res.json({ success: false, errors: { root: "Log out failed. Please try again." } });
+      return res.json({
+        success: false,
+        errors: { root: "Log out failed. Please try again." },
+      });
     }
     return res.json({ success: true });
   });

@@ -1,32 +1,23 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import * as schema from "./Schema/databaseSchema";
-import connection from "../../Database/connection";
+import { product, category, productImg } from "./Schema/databaseSchema";
+import { db } from "../../Database/connection";
 import { eq, sql } from "drizzle-orm";
 import { PostgresError } from "postgres";
-
-const db = drizzle(connection, { schema });
 
 export function getAllProducts() {
   return db
     .select({
-      productId: schema.product.id,
-      sku: schema.product.sku,
-      name: schema.product.name,
-      description: schema.product.description,
-      price: schema.product.price,
-      quantity: schema.product.quantity,
-      category: schema.category.name,
-      productImgs: sql`array_agg(${schema.productImg})`,
+      productId: product.id,
+      sku: product.sku,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      category: category.name,
+      productImgs: sql<string[]>`array_agg(${productImg.imageName})`,
     })
-    .from(schema.product)
-    .leftJoin(
-      schema.category,
-      eq(schema.product.categoryId, schema.category.id)
-    )
-    .leftJoin(
-      schema.productImg,
-      eq(schema.productImg.productId, schema.product.id)
-    );
+    .from(product)
+    .leftJoin(category, eq(product.categoryId, category.id))
+    .leftJoin(productImg, eq(productImg.productId, product.id));
 }
 
 export function getProductById(id: number) {}
@@ -42,33 +33,33 @@ export async function storeProductData(data: Omit<Product, "productImage">) {
   };
 
   try {
-    let category = await db
-      .insert(schema.category)
+    let cat = await db
+      .insert(category)
       .values({ name: data.category })
       .onConflictDoNothing()
-      .returning({ categoryId: schema.category.id });
+      .returning({ categoryId: category.id });
 
-    if (category.length === 0) {
-      category = await db
-        .select({ categoryId: schema.category.id })
-        .from(schema.category)
-        .where(eq(schema.category.name, data.category));
+    if (cat.length === 0) {
+      cat = await db
+        .select({ categoryId: category.id })
+        .from(category)
+        .where(eq(category.name, data.category));
     }
 
-    const product = await db
-      .insert(schema.product)
+    const prod = await db
+      .insert(product)
       .values({
-        categoryId: category[0].categoryId,
+        categoryId: cat[0].categoryId,
         sku: data.sku,
         name: data.name,
         price: data.price,
         quantity: data.quantity,
         description: data.description,
       })
-      .returning({ productId: schema.product.id });
+      .returning({ productId: product.id });
 
     result.success = true;
-    result.productId = product[0].productId;
+    result.productId = prod[0].productId;
     //
   } catch (error) {
     if (
@@ -89,7 +80,7 @@ export async function storeProductImg(imgNames: string[], productId: number) {
   try {
     for (const imgName of imgNames) {
       await db
-        .insert(schema.productImg)
+        .insert(productImg)
         .values({ productId: productId, imageName: imgName });
     }
     result.success = true;
