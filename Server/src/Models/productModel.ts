@@ -12,8 +12,13 @@ export function getAllProducts() {
       description: product.description,
       price: product.price,
       quantity: product.quantity,
+      category: category.name,
+      productImgs: sql<string[]>`array_agg(${productImg.imageName})`,
     })
-    .from(product);
+    .from(product)
+    .leftJoin(category, eq(product.categoryId, category.id))
+    .leftJoin(productImg, eq(productImg.productId, product.id))
+    .groupBy(product.id, category.name);
 }
 
 export function getProductById(id: number) {

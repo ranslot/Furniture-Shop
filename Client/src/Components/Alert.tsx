@@ -9,7 +9,7 @@ export default function Alert() {
 
   return (
     <div
-      className={`fixed left-0 right-0 top-[64px] z-50 mx-auto w-[35%]  ${show ? "scale-100 " : "scale-0"} transform-gpu transition-all`}
+      className={`fixed left-0 right-0 top-[64px] z-50 mx-auto w-[35%]  ${show ? "scale-100 " : "scale-0"} transform-gpu transition-transform`}
     >
       <div
         role="alert"

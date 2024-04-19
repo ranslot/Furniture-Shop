@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { checkIsAdmin } from "../Middlewares/authMiddleware";
 import { addProductValidate } from "../Middlewares/zodValidationMiddleware";
 import multer from "multer";
@@ -30,10 +30,14 @@ productRouter
     "/edit",
     upload.array("productImage[]"),
     checkIsAdmin,
-    addProductValidate,
-    handleProductAddFormData,
-    sendImageToS3,
-    handleProductImg
+    (req: Request, res: Response) => {
+      console.log(req.body);
+      return res.json("XDD");
+    }
+    // addProductValidate,
+    // handleProductAddFormData,
+    // sendImageToS3,
+    // handleProductImg
   );
 
 export default productRouter;

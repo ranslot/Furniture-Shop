@@ -14,12 +14,12 @@ declare interface Product {
   name: string;
   price: number;
   quantity: number;
+  productImage: string[];
+  category: string;
   description?: string | null;
 }
 
 declare interface ProductShow extends Product {
   createdAt: Date;
   modifiedAt: Date;
-  productImage: string[];
-  category: string;
 }
