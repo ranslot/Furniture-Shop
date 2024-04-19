@@ -3,12 +3,15 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import dotenv from "dotenv";
+import session from "express-session";
+import compression from "compression";
+
+import { connectionString } from "../Database/connection";
+import PGStore from "connect-pg-simple";
+import passportInitialize from "./Utils/passport";
+
 import homeRouter from "./Routers/homeRouter";
 import authRouter from "./Routers/authRouter";
-import session from "express-session";
-import passportInitialize from "./Utils/passport";
-import PGStore from "connect-pg-simple";
-import { connectionString } from "../Database/connection";
 import productRouter from "./Routers/productRouter";
 
 //Setup
@@ -27,6 +30,7 @@ app
   .use(cookieParser())
   .use(helmet())
   .use(express.urlencoded({ extended: true }))
+  .use(compression())
   .use(
     session({
       //store sesion on pg db

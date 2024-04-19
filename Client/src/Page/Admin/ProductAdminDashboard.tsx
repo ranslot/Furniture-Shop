@@ -1,10 +1,9 @@
 import { Suspense, lazy } from "react";
 import { Redirect, Route, Switch } from "wouter";
 
-const ProductShowAdmin = lazy(() => import("./Product/ProductShowAdmin"));
-const ProductIndex = lazy(() => import("./Product/ProductIndex"));
+import ProductIndex from "./Product/ProductIndex";
+const ProductEditAdmin = lazy(() => import("./Product/ProductEditAdmin"));
 const ProductAddForm = lazy(() => import("./Product/ProductAddForm"));
-const ProductEditForm = lazy(() => import("./Product/ProductEditForm"));
 
 export default function ProductAdminDashboard() {
   return (
@@ -13,8 +12,7 @@ export default function ProductAdminDashboard() {
         <Switch>
           <Route path="/" component={ProductIndex} />
           <Route path="/add" component={ProductAddForm} />
-          <Route path="/edit/:id" component={ProductEditForm} />
-          <Route path="/:id" component={ProductShowAdmin} />
+          <Route path="/:id" component={ProductEditAdmin} />
           <Route>
             <Redirect to="/" />
           </Route>

@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
-import { deleteUser, getAllUsers, getUserById, storeUser, updateUser } from "../Models/userModel";
+import {
+  deleteUser,
+  getAllUsers,
+  getUserById,
+  storeUser,
+  updateUser,
+} from "../Models/userModel";
 import { hash } from "bcrypt";
 import { PostgresError } from "postgres";
 
@@ -20,7 +26,7 @@ export async function update(req: Request, res: Response) {
 
 //register
 export async function handleUserRegister(req: Request, res: Response) {
-  const { name, email, password } = req.body as UserRegister;
+  const { name, email, password } = req.body as User & { password: string };
   const hashPassword = await hash(password, 10);
   try {
     await storeUser({
@@ -33,7 +39,10 @@ export async function handleUserRegister(req: Request, res: Response) {
     });
   } catch (err) {
     //not an unique Email
-    if (err instanceof PostgresError && err.constraint_name === "user_email_unique") {
+    if (
+      err instanceof PostgresError &&
+      err.constraint_name === "user_email_unique"
+    ) {
       return res.json({
         success: false,
         errors: {

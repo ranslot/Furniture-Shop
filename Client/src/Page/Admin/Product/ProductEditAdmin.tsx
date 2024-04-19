@@ -1,9 +1,12 @@
+import { Link, useParams } from "wouter";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Link, useLocation } from "wouter";
 import { z } from "zod";
-import { postDataWithFiles } from "../../../Utils/httpRequest";
+import {
+  getDataWithAutorization,
+  postDataWithFiles,
+} from "../../../Utils/httpRequest";
 import useAlertStore from "../../../Utils/store";
 
 const MAX_IMAGES = 5;
@@ -15,7 +18,7 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-const productStoreSchema = z.object({
+const productEditSchema = z.object({
   sku: z.string().min(1, { message: "Product SKU is required." }),
   name: z.string().min(1, { message: "Product name is required." }),
   category: z.string().min(1, { message: "Product category is required." }),
@@ -59,16 +62,16 @@ const productStoreSchema = z.object({
     ),
 });
 
-type ProductStoreFormFields = z.infer<typeof productStoreSchema>;
+type ProductEditFormFields = z.infer<typeof productEditSchema>;
 
-type ProductStoreSuccess = {
+type ProductEditSuccess = {
   success: true;
 };
-type ProductStoreError = {
+type ProductEditError = {
   success: false;
-  errors: ProductStoreErrorMessages;
+  errors: ProductEditErrorMessages;
 };
-type ProductStoreErrorMessages = {
+type ProductEditErrorMessages = {
   sku?: string;
   name?: string;
   category?: string;
@@ -77,37 +80,40 @@ type ProductStoreErrorMessages = {
   productImage?: string;
 };
 
-type ProductStoreResponse = ProductStoreSuccess | ProductStoreError;
+type ProductEditResponse = ProductEditSuccess | ProductEditError;
 
-export default function ProductAddForm() {
+export default function ProductEditAdmin() {
+  const queryClient = useQueryClient();
+
+  const { id } = useParams();
+
+  const { data, isLoading, error } = useQuery<ProductShow>({
+    queryKey: ["product"],
+    queryFn: () => getDataWithAutorization(`product/${id}`),
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<ProductStoreFormFields>({
-    resolver: zodResolver(productStoreSchema),
+  } = useForm<ProductEditFormFields>({
+    resolver: zodResolver(productEditSchema),
   });
 
   const { showAlert } = useAlertStore();
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_location, navigate] = useLocation();
-
-  const queryClient = useQueryClient();
-
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormData) => postDataWithFiles(data, "product/add"),
-    onSuccess(result: ProductStoreResponse) {
+    mutationFn: (data: FormData) => postDataWithFiles(data, "product/edit"),
+    onSuccess(result: ProductEditResponse) {
       if (result.success) {
-        queryClient.invalidateQueries({ queryKey: ["products"] });
-        showAlert("Add product success", false);
-        navigate("/");
+        queryClient.invalidateQueries({ queryKey: ["product"] });
+        showAlert("Edit product success", false);
       } else {
         Object.keys(result.errors).forEach((key) => {
-          const field = key as keyof ProductStoreFormFields | "root";
+          const field = key as keyof ProductEditFormFields | "root";
           const errorMessage =
-            result.errors[key as keyof ProductStoreErrorMessages];
+            result.errors[key as keyof ProductEditErrorMessages];
           setError(field, { message: errorMessage });
         });
       }
@@ -117,7 +123,7 @@ export default function ProductAddForm() {
     },
   });
 
-  async function onSubmit(data: ProductStoreFormFields) {
+  async function onSubmit(data: ProductEditFormFields) {
     const formData = new FormData();
 
     // Add all properties except productImage (handled separately)
@@ -125,7 +131,7 @@ export default function ProductAddForm() {
       if (key !== "productImage") {
         formData.append(
           key,
-          data[key as keyof ProductStoreFormFields] as string,
+          data[key as keyof ProductEditFormFields] as string,
         );
       }
     }
@@ -141,6 +147,16 @@ export default function ProductAddForm() {
     mutate(formData);
   }
 
+  if (isLoading) {
+    return <>Loading...</>;
+  }
+
+  if (error || !data) {
+    return <>XDD</>;
+  }
+
+  console.log(data, id);
+
   return (
     <>
       <Link
@@ -155,7 +171,7 @@ export default function ProductAddForm() {
         encType="multipart/form-data"
       >
         <h1 className="mb-3 text-center text-3xl font-bold  text-primary">
-          Add Product
+          Edit Product
         </h1>
         <div className="mx-5 flex flex-col">
           <label
@@ -166,7 +182,7 @@ export default function ProductAddForm() {
               className="grow"
               {...register("sku")}
               type="text"
-              placeholder="SKU"
+              value={data.sku}
             />
           </label>
           {errors?.sku ? (
@@ -184,7 +200,7 @@ export default function ProductAddForm() {
               className="grow"
               {...register("name")}
               type="text"
-              placeholder="Product name"
+              value={data.name}
             />
           </label>
           {errors?.name ? (
@@ -202,7 +218,7 @@ export default function ProductAddForm() {
               className="grow"
               {...register("description")}
               type="text"
-              placeholder="Description"
+              value={data.description || "None"}
             />
           </label>
           {errors?.description ? (
@@ -222,7 +238,7 @@ export default function ProductAddForm() {
               className="grow"
               {...register("category")}
               type="text"
-              placeholder="category"
+              value={data.category}
             />
           </label>
           {errors?.category ? (
@@ -242,7 +258,7 @@ export default function ProductAddForm() {
               className="grow"
               {...register("price")}
               type="number"
-              placeholder="Product price"
+              value={data.price}
             />
           </label>
           {errors?.price ? (
@@ -260,7 +276,7 @@ export default function ProductAddForm() {
               className="grow"
               {...register("quantity")}
               type="number"
-              placeholder="Product quantity"
+              value={data.quantity}
             />
           </label>
           {errors?.quantity ? (
@@ -304,7 +320,7 @@ export default function ProductAddForm() {
           {isPending ? (
             <span className="loading loading-spinner text-primary"></span>
           ) : (
-            "Add product"
+            "Edit product"
           )}
         </button>
         {errors?.root ? (

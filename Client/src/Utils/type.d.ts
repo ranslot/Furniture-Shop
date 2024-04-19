@@ -8,12 +8,18 @@ declare type User = {
   modifiedAt?: Date;
 };
 
-declare type Product = {
+declare interface Product {
+  productId: number;
   sku: string;
   name: string;
-  category: string;
   price: number;
   quantity: number;
   productImage: string[];
+  category: string;
   description?: string | null;
-};
+}
+
+declare interface ProductShow extends Product {
+  createdAt: Date;
+  modifiedAt: Date;
+}

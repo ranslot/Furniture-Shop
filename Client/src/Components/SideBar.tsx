@@ -11,7 +11,7 @@ export default function SideBar({ children }: PropsWithChildren) {
           <li>
             <Link
               to="/"
-              className="h-16 content-center justify-center  text-lg font-bold"
+              className="h-16 content-center justify-center text-lg font-bold hover:bg-primary hover:text-white"
             >
               Dashboard
             </Link>
@@ -19,7 +19,7 @@ export default function SideBar({ children }: PropsWithChildren) {
           <li>
             <Link
               to="/products"
-              className="h-16 content-center justify-center  text-lg font-bold"
+              className="h-16 content-center justify-center text-lg font-bold hover:bg-primary hover:text-white"
             >
               Products
             </Link>
@@ -27,7 +27,7 @@ export default function SideBar({ children }: PropsWithChildren) {
           <li>
             <Link
               to="/payments"
-              className="h-16 content-center justify-center  text-lg font-bold"
+              className="h-16 content-center justify-center text-lg font-bold hover:bg-primary hover:text-white "
             >
               Payments
             </Link>
@@ -36,7 +36,7 @@ export default function SideBar({ children }: PropsWithChildren) {
           <li>
             <Link
               to="/users"
-              className="h-16 content-center justify-center  text-lg font-bold"
+              className="h-16 content-center justify-center text-lg font-bold hover:bg-primary hover:text-white "
             >
               Users
             </Link>

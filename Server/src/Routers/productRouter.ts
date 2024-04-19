@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { checkIsAdmin } from "../Middlewares/authMiddleware";
 import { addProductValidate } from "../Middlewares/zodValidationMiddleware";
 import multer from "multer";
@@ -7,6 +7,7 @@ import {
   handleProductImg,
   handleProductAddFormData,
   handleProductIndex,
+  handleProductShow,
 } from "../Controllers/productController";
 
 const productRouter = express.Router();
@@ -15,6 +16,7 @@ const upload = multer({ storage: storage });
 
 productRouter
   .get("/", handleProductIndex)
+  .get("/:id", handleProductShow)
   .post(
     "/add",
     upload.array("productImage[]"),
@@ -23,6 +25,19 @@ productRouter
     handleProductAddFormData,
     sendImageToS3,
     handleProductImg
+  )
+  .post(
+    "/edit",
+    upload.array("productImage[]"),
+    checkIsAdmin,
+    (req: Request, res: Response) => {
+      console.log(req.body);
+      return res.json("XDD");
+    }
+    // addProductValidate,
+    // handleProductAddFormData,
+    // sendImageToS3,
+    // handleProductImg
   );
 
 export default productRouter;
