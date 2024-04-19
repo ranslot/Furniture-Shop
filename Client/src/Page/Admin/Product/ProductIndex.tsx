@@ -1,26 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { getData } from "../../../Utils/httpRequest";
+import ProductTable from "../../../Components/ProductTable";
 
 export default function ProductIndex() {
-  const { data, error, isLoading } = useQuery<Product>({
-    queryKey: ["user"],
-    queryFn: () => getData("/product"),
+  const { data, error, isLoading } = useQuery<Product[]>({
+    queryKey: ["product"],
+    queryFn: () => getData("product"),
   });
 
-  if (isLoading) return <>XDD</>;
-
-  if (error) return <>DDDXXX</>;
-
-  console.log(data);
-
-  const pid = 1;
-  return (
-    <>
-      ProductIndex
-      <Link to="/add">add product</Link>
-      <Link to={`/edit/${pid}`}>Edit product</Link>
-      <Link to={`/${pid}`}>Show product</Link>
-    </>
-  );
+  if (isLoading) {
+    return <>XDD</>;
+  } else if (error || !data) {
+    return <>DDDXXX</>;
+  } else {
+    return (
+      <div className="flex flex-col items-center gap-5 ">
+        <div className="flex flex-row gap-3">
+          <Link to="/add" className="btn btn-square btn-primary w-[150px] px-1">
+            Add New Product
+          </Link>
+        </div>
+        <main>
+          <ProductTable products={data} />
+        </main>
+      </div>
+    );
+  }
 }

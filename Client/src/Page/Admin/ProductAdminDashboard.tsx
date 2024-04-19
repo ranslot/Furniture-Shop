@@ -13,8 +13,8 @@ export default function ProductAdminDashboard() {
         <Switch>
           <Route path="/" component={ProductIndex} />
           <Route path="/add" component={ProductAddForm} />
-          <Route path="/edit/:id" component={ProductEditForm} />
-          <Route path="/:id" component={ProductShowAdmin} />
+          <Route path="/edit/:sku" component={ProductEditForm} />
+          <Route path="/:sku" component={ProductShowAdmin} />
           <Route>
             <Redirect to="/" />
           </Route>

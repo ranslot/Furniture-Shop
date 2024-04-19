@@ -17,7 +17,8 @@ export function getAllProducts() {
     })
     .from(product)
     .leftJoin(category, eq(product.categoryId, category.id))
-    .leftJoin(productImg, eq(productImg.productId, product.id));
+    .leftJoin(productImg, eq(productImg.productId, product.id))
+    .groupBy(product.id, category.name);
 }
 
 export function getProductById(id: number) {}

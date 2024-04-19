@@ -3,10 +3,7 @@ declare namespace Express {
     id: number;
     name: string;
     email: string;
-    password: string;
     isAdmin: boolean | null;
-    createdAt: Date | null;
-    modifiedAt: Date | null;
   }
   interface Locals {
     imgNames: string[];
@@ -19,13 +16,8 @@ declare type User = {
   id: number;
   name: string;
   email: string;
-  password: string;
   isAdmin: boolean | null;
-  createdAt: Date | null;
-  modifiedAt: Date | null;
 };
-
-declare type UserRegister = Pick<User, "name" | "email" | "password">;
 
 declare type Product = {
   sku: string;

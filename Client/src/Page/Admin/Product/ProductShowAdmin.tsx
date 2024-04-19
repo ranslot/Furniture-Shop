@@ -1,11 +1,11 @@
 import { Link, useParams } from "wouter";
 
 export default function ProductShowAdmin() {
-  const { id } = useParams();
+  const { sku } = useParams();
   return (
     <>
       <Link to="/">back to products</Link>
-      {+id!}
+      {sku!}
     </>
   );
 }
