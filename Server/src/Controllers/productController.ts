@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
   getAllProducts,
+  getProductById,
   storeProductData,
   storeProductImg,
 } from "../Models/productModel";
@@ -59,4 +60,9 @@ export async function handleProductImg(req: Request, res: Response) {
 export async function handleProductIndex(req: Request, res: Response) {
   const result = await getAllProducts();
   return res.json(result);
+}
+
+export async function handleProductShow(req: Request, res: Response) {
+  const result = await getProductById(+req.params.id);
+  return res.json(result[0]);
 }

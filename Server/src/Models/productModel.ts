@@ -12,16 +12,30 @@ export function getAllProducts() {
       description: product.description,
       price: product.price,
       quantity: product.quantity,
+    })
+    .from(product);
+}
+
+export function getProductById(id: number) {
+  return db
+    .select({
+      productId: product.id,
+      sku: product.sku,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
       category: category.name,
       productImgs: sql<string[]>`array_agg(${productImg.imageName})`,
+      createdAt: product.createdAt,
+      modifiedAt: product.modifiedAt,
     })
     .from(product)
     .leftJoin(category, eq(product.categoryId, category.id))
     .leftJoin(productImg, eq(productImg.productId, product.id))
-    .groupBy(product.id, category.name);
+    .groupBy(product.id, category.name)
+    .limit(1);
 }
-
-export function getProductById(id: number) {}
 
 export function getProductByCategory(category: string) {}
 

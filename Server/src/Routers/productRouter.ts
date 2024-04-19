@@ -7,6 +7,7 @@ import {
   handleProductImg,
   handleProductAddFormData,
   handleProductIndex,
+  handleProductShow,
 } from "../Controllers/productController";
 
 const productRouter = express.Router();
@@ -15,8 +16,18 @@ const upload = multer({ storage: storage });
 
 productRouter
   .get("/", handleProductIndex)
+  .get("/:id", handleProductShow)
   .post(
     "/add",
+    upload.array("productImage[]"),
+    checkIsAdmin,
+    addProductValidate,
+    handleProductAddFormData,
+    sendImageToS3,
+    handleProductImg
+  )
+  .post(
+    "/edit",
     upload.array("productImage[]"),
     checkIsAdmin,
     addProductValidate,
