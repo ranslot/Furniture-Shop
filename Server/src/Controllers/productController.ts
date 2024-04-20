@@ -67,9 +67,7 @@ export async function handleProductShow(req: Request, res: Response) {
 
   const IMG_URL = "XDDX";
   for (let r of result) {
-    for (let img in r.productImgs) {
-      img = IMG_URL + img;
-    }
+    r.productImgs = r.productImgs.map((img) => IMG_URL + img);
   }
   return res.json(result[0]);
 }
