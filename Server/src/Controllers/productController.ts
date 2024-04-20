@@ -64,5 +64,10 @@ export async function handleProductIndex(req: Request, res: Response) {
 
 export async function handleProductShow(req: Request, res: Response) {
   const result = await getProductById(+req.params.id);
+
+  const IMG_URL = "XDDX";
+  for (let r of result) {
+    r.productImgs = r.productImgs.map((img) => IMG_URL + img);
+  }
   return res.json(result[0]);
 }
