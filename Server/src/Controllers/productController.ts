@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from "express";
+import dotenv from "dotenv";
 import {
   getAllProducts,
   getProductById,
   storeProductData,
   storeProductImg,
 } from "../Models/productModel";
+
+dotenv.config();
+const AWS_CLOUDFRONT_URL = process.env.AWS_CLOUDFRONT_URL as string;
 
 export async function handleProductAddFormData(
   req: Request,
@@ -59,15 +63,16 @@ export async function handleProductImg(req: Request, res: Response) {
 
 export async function handleProductIndex(req: Request, res: Response) {
   const result = await getAllProducts();
+  result.forEach((prod) =>
+    prod.productImgs.map((img) => (img = AWS_CLOUDFRONT_URL + img))
+  );
   return res.json(result);
 }
 
 export async function handleProductShow(req: Request, res: Response) {
   const result = await getProductById(+req.params.id);
-
-  const IMG_URL = "XDDX";
-  for (let r of result) {
-    r.productImgs = r.productImgs.map((img) => IMG_URL + img);
-  }
+  result.forEach((prod) =>
+    prod.productImgs.map((img) => (img = AWS_CLOUDFRONT_URL + img))
+  );
   return res.json(result[0]);
 }
