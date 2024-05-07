@@ -1,4 +1,4 @@
-import useAlertStore from "../../Utils/store";
+import useAlertStore from "../../Utils/alertStore";
 
 export default function Dashboard() {
   console.log("Dashboard");

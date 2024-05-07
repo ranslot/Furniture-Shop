@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation } from "wouter";
 import { z } from "zod";
 import { postDataWithFiles } from "../../../Utils/httpRequest";
-import useAlertStore from "../../../Utils/store";
+import useAlertStore from "../../../Utils/alertStore";
 
 const MAX_IMAGES = 5;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
