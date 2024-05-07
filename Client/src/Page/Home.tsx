@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getData } from "../Utils/httpRequest";
+import useCartStore from "../Utils/cartStore";
 
 export default function Home() {
   const { data, isLoading, error } = useQuery<Product[]>({
@@ -7,7 +8,7 @@ export default function Home() {
     queryFn: () => getData("product"),
   });
 
-  const IMG_URL = "";
+  const { addToCart } = useCartStore();
 
   if (isLoading) {
     return <>Loading....</>;
@@ -25,11 +26,13 @@ export default function Home() {
             className="card w-96 transform-gpu  bg-base-100 shadow-xl transition-transform hover:z-10 hover:scale-105"
             key={product.productId}
           >
-            <figure className="cursor-pointer">
+            <figure className="h-[243px] cursor-pointer">
               <img
                 // src={IMG_URL + product.productImage[0]}
-                src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+                src={product.productImgs[0]}
                 alt={product.name}
+                height="243"
+                width="383.99"
               />
             </figure>
             <div className="card-body">
@@ -39,8 +42,12 @@ export default function Home() {
                 {"Price " + product.price + ". Baht"}
               </h3>
               <div className="card-actions justify-end gap-3">
-                <button className="btn btn-secondary z-20">Add to cart</button>
-                <button className="btn btn-primary z-20">Buy Now</button>
+                <button
+                  className="btn btn-primary z-20"
+                  onClick={() => addToCart(product)}
+                >
+                  Add to cart
+                </button>
               </div>
             </div>
           </div>

@@ -64,7 +64,9 @@ export async function handleProductImg(req: Request, res: Response) {
 export async function handleProductIndex(req: Request, res: Response) {
   const result = await getAllProducts();
   result.forEach((prod) =>
-    prod.productImgs.map((img) => (img = AWS_CLOUDFRONT_URL + img))
+    prod.productImgs.forEach((img, idx) => {
+      prod.productImgs[idx] = AWS_CLOUDFRONT_URL + "/" + img;
+    })
   );
   return res.json(result);
 }
@@ -72,7 +74,9 @@ export async function handleProductIndex(req: Request, res: Response) {
 export async function handleProductShow(req: Request, res: Response) {
   const result = await getProductById(+req.params.id);
   result.forEach((prod) =>
-    prod.productImgs.map((img) => (img = AWS_CLOUDFRONT_URL + img))
+    prod.productImgs.forEach((img, idx) => {
+      prod.productImgs[idx] = AWS_CLOUDFRONT_URL + "/" + img;
+    })
   );
   return res.json(result[0]);
 }
