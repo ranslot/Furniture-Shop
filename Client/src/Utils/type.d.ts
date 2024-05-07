@@ -14,7 +14,7 @@ declare interface Product {
   name: string;
   price: number;
   quantity: number;
-  productImage: string[];
+  productImgs: string[];
   category: string;
   description?: string | null;
 }

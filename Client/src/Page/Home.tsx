@@ -7,8 +7,6 @@ export default function Home() {
     queryFn: () => getData("product"),
   });
 
-  const IMG_URL = "";
-
   if (isLoading) {
     return <>Loading....</>;
   }
@@ -16,6 +14,8 @@ export default function Home() {
   if (error || !data) {
     return <>Error</>;
   }
+
+  console.log(data);
 
   return (
     <>
@@ -28,8 +28,10 @@ export default function Home() {
             <figure className="cursor-pointer">
               <img
                 // src={IMG_URL + product.productImage[0]}
-                src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg"
+                src={product.productImgs[0]}
                 alt={product.name}
+                height="243"
+                width="383.99"
               />
             </figure>
             <div className="card-body">
