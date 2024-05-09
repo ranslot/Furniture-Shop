@@ -70,7 +70,7 @@ export default function CartDropdown() {
               ราคารวม {priceSum} บาท
             </span>
             <div className="card-actions">
-              <Link to="" className="btn btn-primary btn-block">
+              <Link to="/checkout" className="btn btn-primary btn-block">
                 ชำระเงิน
               </Link>
               <button

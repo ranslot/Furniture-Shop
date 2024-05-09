@@ -1,6 +1,6 @@
 import { Redirect, Route, Switch } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { getDataWithAutorization } from "../Utils/httpRequest";
+import { getAutorizationData } from "../Utils/httpRequest";
 import { Suspense, lazy } from "react";
 
 import SideBar from "../Components/SideBar";
@@ -26,7 +26,7 @@ type AdminUserData = {
 export default function AdminLayout() {
   const { data, error, isLoading } = useQuery<AdminUserData>({
     queryKey: ["user"],
-    queryFn: () => getDataWithAutorization(),
+    queryFn: () => getAutorizationData(),
   });
 
   if (isLoading) {

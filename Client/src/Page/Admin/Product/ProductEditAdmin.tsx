@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
-  getDataWithAutorization,
+  getAutorizationData,
   postDataWithFiles,
 } from "../../../Utils/httpRequest";
 import useAlertStore from "../../../Utils/alertStore";
@@ -89,7 +89,7 @@ export default function ProductEditAdmin() {
 
   const { data, isLoading, error } = useQuery<ProductShow>({
     queryKey: ["product"],
-    queryFn: () => getDataWithAutorization(`product/${id}`),
+    queryFn: () => getAutorizationData(`product/${id}`),
   });
 
   const {
