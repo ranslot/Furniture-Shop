@@ -4,6 +4,8 @@ import useCartStore from "../Utils/cartStore";
 import { useEffect, useState } from "react";
 
 export default function Home() {
+  const DEFAULT_AMOUNT = 1;
+
   const { data, isLoading, error } = useQuery<Product[]>({
     queryKey: ["products"],
     queryFn: () => getData("product"),
@@ -15,7 +17,8 @@ export default function Home() {
 
   useEffect(() => {
     if (data) {
-      setAmounts(Array(data.length).fill(DEFAULT_AMOUNT));
+      const defaultAmounts: number[] = Array(data.length).fill(DEFAULT_AMOUNT);
+      setAmounts(defaultAmounts);
     }
   }, [data]);
 
@@ -27,16 +30,13 @@ export default function Home() {
     return <>Error</>;
   }
 
-  const DEFAULT_AMOUNT = 1;
-  const products = data.map((d) => ({ ...d, amount: DEFAULT_AMOUNT }));
-
   return (
     <>
       <main className=" mx-auto flex w-[100%] max-w-[1300px] flex-row flex-wrap justify-center gap-3 p-5  ">
-        {products.map((product) => (
+        {data.map((product, index) => (
           <div
             className="card w-96 transform-gpu bg-base-100 shadow-xl transition-transform hover:z-10 hover:scale-105"
-            key={product.productId}
+            key={index}
           >
             <figure className="h-[243px] cursor-pointer">
               <img
@@ -47,34 +47,40 @@ export default function Home() {
               />
             </figure>
             <div className="card-body">
-              <h2 className="card-title cursor-pointer">product.name</h2>
-              <p>{product.description ?? "ไม่มีรายละเอียด"}</p>
-              <h3 className="my-auto text-right font-bold">
+              <h2 className="card-title cursor-pointer">{product.name}</h2>
+              <p className="text-gray-400">
+                {"สินค้าคงเหลือ : " + product.quantity}
+              </p>
+              <h3 className="mx-1 my-auto text-right font-bold">
                 {"ราคา " + product.price + " บาท"}
               </h3>
               <div className="card-actions justify-end gap-3">
-                <div>
-                  <p>จำนวน</p>
+                <div className="my-auto flex flex-row">
+                  <p className="text-gray-500">จำนวน</p>
                   <button
-                    className="btn btn-xs"
+                    className="btn btn-xs mx-2"
                     onClick={() => {
-                      product.amount = product.amount - 1;
                       setAmounts((prev) => ({
                         ...prev,
-                        [product.productId]: amounts[product.productId]--,
+                        [index]:
+                          amounts[index] >= DEFAULT_AMOUNT
+                            ? amounts[index]--
+                            : DEFAULT_AMOUNT,
                       }));
                     }}
                   >
                     -
                   </button>
-                  {amounts[product.productId]}
+                  {amounts[index]}
                   <button
-                    className="btn btn-xs"
+                    className="btn btn-xs mx-2"
                     onClick={() => {
-                      product.amount = product.amount + 1;
                       setAmounts((prev) => ({
                         ...prev,
-                        [product.productId]: amounts[product.productId]++,
+                        [index]:
+                          amounts[index] <= product.quantity
+                            ? amounts[index]++
+                            : product.quantity,
                       }));
                     }}
                   >
@@ -82,10 +88,10 @@ export default function Home() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-primary z-20"
-                  onClick={() => addToCart(product)}
+                  className="btn btn-primary z-20 "
+                  onClick={() => addToCart(product, amounts[index])}
                 >
-                  Add to cart
+                  หยิบใส่ตะกร้า
                 </button>
               </div>
             </div>

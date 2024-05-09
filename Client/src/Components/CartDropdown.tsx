@@ -1,10 +1,11 @@
+import { Link } from "wouter";
 import useCartStore from "../Utils/cartStore";
 
 export default function CartDropdown() {
   const { products, clearCart } = useCartStore();
 
-  const price = products.reduce(
-    (sum, product) => sum + product.price * (product.amount || 1),
+  const priceSum = products.reduce(
+    (sum, p) => sum + p.product.price * (p.amount || 1),
     0,
   );
 
@@ -39,23 +40,51 @@ export default function CartDropdown() {
       </button>
       <div
         tabIndex={0}
-        className="card dropdown-content card-compact z-[1] mt-3 w-52 bg-base-100 shadow"
+        className="card dropdown-content card-compact z-[1] mt-3 min-w-52 max-w-[600px] bg-base-100 shadow"
       >
         {products.length !== 0 ? (
           <div className="card-body">
-            <span className="text-lg font-bold">{products.length} Items</span>
-            <span className="text-info">ราคารวม {price}</span>
+            <span className="text-center text-lg font-bold">
+              ตะกร้าสิ้นค้า จำนวน {products.length} ชิ้น
+            </span>
+            {products.map((p, i) => (
+              <div
+                className="grid w-[500px] grid-cols-[128px,1fr,1fr,1fr] gap-4 border-b border-t p-1"
+                key={i}
+              >
+                <img
+                  src={p.product.productImgs[0]}
+                  alt={p.product.name}
+                  height="81"
+                  width="128"
+                  className="justify-self-start"
+                />
+                <p className="my-auto text-center">{p.product.name}</p>
+                <p className="my-auto text-center">จำนวน: {p.amount}</p>
+                <p className="my-auto text-center">
+                  ราคาต่อชิ้น: {p.product.price}
+                </p>
+              </div>
+            ))}
+            <span className="text-center text-lg text-info">
+              ราคารวม {priceSum} บาท
+            </span>
             <div className="card-actions">
+              <Link to="" className="btn btn-primary btn-block">
+                ชำระเงิน
+              </Link>
               <button
                 className="btn-danger btn btn-block"
                 onClick={() => clearCart()}
               >
-                Clear cart
+                ล้างตะกร้า
               </button>
             </div>
           </div>
         ) : (
-          <div className="card-body">ไม่มีสิ้นค้าในตะกร้า</div>
+          <div className="card-body text-center font-semibold">
+            ไม่มีสิ้นค้าในตะกร้า
+          </div>
         )}
       </div>
     </div>
