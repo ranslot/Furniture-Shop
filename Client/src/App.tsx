@@ -12,6 +12,7 @@ const AuthenticationLayout = lazy(
 );
 const ProductLayout = lazy(() => import("./Layout/ProductLayout"));
 const UserLayout = lazy(() => import("./Layout/UserLayout"));
+const CheckOutLayout = lazy(() => import("./Layout/CheckOutLayout"));
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/auth/:page" component={AuthenticationLayout} />
         <Route path="/product/:id" component={ProductLayout} />
         <Route path="/user/:id" component={UserLayout} />
+        <Route path="/checkout" component={CheckOutLayout} />
         <Route>
           <Redirect to="/" />
         </Route>

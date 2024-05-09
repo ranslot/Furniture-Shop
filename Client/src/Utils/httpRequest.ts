@@ -4,7 +4,7 @@ export async function getData(route: string = "") {
   const res = await fetch(SERVER_URL + route);
   return res.json();
 }
-export async function getDataWithAutorization(route: string = "") {
+export async function getAutorizationData(route: string = "") {
   const res = await fetch(SERVER_URL + route, {
     method: "get",
     credentials: "include",

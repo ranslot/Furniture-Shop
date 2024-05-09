@@ -2,7 +2,7 @@ import { Link, Redirect, useRoute } from "wouter";
 import Login from "../Page/Login";
 import Register from "../Page/Register";
 import { useQuery } from "@tanstack/react-query";
-import { getDataWithAutorization } from "../Utils/httpRequest";
+import { getAutorizationData } from "../Utils/httpRequest";
 
 type UserRole = {
   user: User | null;
@@ -15,7 +15,7 @@ export default function AuthenticationLayout() {
 
   const { data } = useQuery<UserRole>({
     queryKey: ["user"],
-    queryFn: () => getDataWithAutorization(),
+    queryFn: () => getAutorizationData(),
   });
 
   if (data?.isUser) {

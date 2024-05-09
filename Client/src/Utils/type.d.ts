@@ -16,7 +16,7 @@ declare interface Product {
   quantity: number;
   productImgs: string[];
   category: string;
-  description?: string | null;
+  description: string | null;
 }
 
 declare interface ProductShow extends Product {
