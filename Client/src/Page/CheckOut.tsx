@@ -2,16 +2,22 @@ import { useQuery } from "@tanstack/react-query";
 import PaymentForm from "../Components/PaymentForm";
 import UserAddressForm from "../Components/UserAddressForm";
 import { getDataWithAuth } from "../Utils/httpRequest";
-import { FormProvider, useForm } from "react-hook-form";
+import * as z from "zod";
+import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CartForm from "../Components/CartForm";
+import { userAddressSchema } from "../Utils/checkoutSchema";
 
 type CheckOutProps = {
   user: User;
 };
 
-type UserAddress = {
-  //
+type UserAddress = z.infer<typeof userAddressSchema>;
+
+type CheckOutFormData = {
+  address: UserAddress;
+  cart: unknown;
+  payment: unknown;
 };
 
 export default function CheckOut({ user }: CheckOutProps) {
@@ -20,9 +26,13 @@ export default function CheckOut({ user }: CheckOutProps) {
     queryFn: () => getDataWithAuth(`address/${user.id}`),
   });
 
-  const methods = useForm<>({
-    resolver: zodResolver(),
+  const methods = useForm<CheckOutFormData>({
+    resolver: zodResolver(userAddressSchema),
   });
+
+  const onSubmit: SubmitHandler<CheckOutFormData> = (formData) => {
+    console.log(formData);
+  };
 
   if (error) {
     return <>XDD</>;
@@ -31,11 +41,11 @@ export default function CheckOut({ user }: CheckOutProps) {
   return (
     <main className="flex flex-col gap-1 md:flex-row">
       <FormProvider {...methods}>
-        <form action={methods.handleSubmit(onSubmit)}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
           <CartForm />
-          <UserAddressForm user={data} />
+          <UserAddressForm {...data} />
           <PaymentForm />
-          <button type="submit"></button>
+          <button type="submit">Submit</button>
         </form>
       </FormProvider>
     </main>
