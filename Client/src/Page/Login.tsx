@@ -4,17 +4,7 @@ import { z } from "zod";
 import { postData } from "../Utils/httpRequest";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required." })
-    .email({ message: "Invalid email address." }),
-  password: z
-    .string()
-    .min(1, { message: "Password is required." })
-    .min(8, { message: "Password must be longer than 8 character." }),
-});
+import { loginSchema } from "../Utils/formSchema";
 
 type LoginFormFields = z.infer<typeof loginSchema>;
 

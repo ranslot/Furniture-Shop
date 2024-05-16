@@ -6,7 +6,7 @@ import * as z from "zod";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CartForm from "../Components/CartForm";
-import { userAddressSchema } from "../Utils/checkoutSchema";
+import { userAddressSchema } from "../Utils/formSchema";
 
 type CheckOutProps = {
   user: User;
@@ -35,7 +35,7 @@ export default function CheckOut({ user }: CheckOutProps) {
   };
 
   if (error) {
-    return <>XDD</>;
+    return "An error has occurred: " + error.message;
   }
 
   return (

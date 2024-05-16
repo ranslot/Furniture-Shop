@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { userAddressSchema } from "../Utils/checkoutSchema";
+import { userAddressSchema } from "../Utils/formSchema";
 import * as z from "zod";
 
 type UserAddress = Partial<z.infer<typeof userAddressSchema>>;
