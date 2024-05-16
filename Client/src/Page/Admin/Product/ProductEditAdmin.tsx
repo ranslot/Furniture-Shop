@@ -3,10 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  getAutorizationData,
-  postDataWithFiles,
-} from "../../../Utils/httpRequest";
+import { getDataWithAuth, postDataWithFiles } from "../../../Utils/httpRequest";
 import useAlertStore from "../../../Utils/alertStore";
 
 const MAX_IMAGES = 5;
@@ -89,7 +86,7 @@ export default function ProductEditAdmin() {
 
   const { data, isLoading, error } = useQuery<ProductShow>({
     queryKey: ["product"],
-    queryFn: () => getAutorizationData(`product/${id}`),
+    queryFn: () => getDataWithAuth(`product/${id}`),
   });
 
   const {
