@@ -4,27 +4,7 @@ import { z } from "zod";
 import { postData } from "../Utils/httpRequest";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-
-const registerSchema = z
-  .object({
-    name: z.string().min(1, { message: "Username is required." }),
-    email: z
-      .string()
-      .min(1, { message: "Email is required." })
-      .email({ message: "Invalid email address." }),
-    password: z
-      .string()
-      .min(1, { message: "Password is required." })
-      .min(8, { message: "Password must be longer than 8 character." }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Confirm Password is required." })
-      .min(8, { message: "Confirm Password must be longer than 8 character." }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Confirm password not match.",
-    path: ["confirmPassword"],
-  });
+import { registerSchema } from "../Utils/formSchema";
 
 type RegisterFormFields = z.infer<typeof registerSchema>;
 

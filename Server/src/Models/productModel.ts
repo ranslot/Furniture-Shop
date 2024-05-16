@@ -36,6 +36,7 @@ export function getProductById(id: number) {
       modifiedAt: product.modifiedAt,
     })
     .from(product)
+    .where(eq(product.id, id))
     .leftJoin(category, eq(product.categoryId, category.id))
     .leftJoin(productImg, eq(productImg.productId, product.id))
     .groupBy(product.id, category.name)

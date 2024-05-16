@@ -13,6 +13,7 @@ import passportInitialize from "./Utils/passport";
 import homeRouter from "./Routers/homeRouter";
 import authRouter from "./Routers/authRouter";
 import productRouter from "./Routers/productRouter";
+import addressRouter from "./Routers/addressRouter";
 
 //Setup
 dotenv.config();
@@ -52,7 +53,8 @@ passportInitialize(app);
 app
   .use("/", homeRouter)
   .use("/auth", authRouter)
-  .use("/product", productRouter);
+  .use("/product", productRouter)
+  .use("/address", addressRouter);
 
 //Run
 app.listen(SERVER_PORT, () => {
