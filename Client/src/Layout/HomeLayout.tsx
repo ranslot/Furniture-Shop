@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAutorizationData } from "../Utils/httpRequest";
+import { getDataWithAuth } from "../Utils/httpRequest";
 import { Redirect } from "wouter";
 
 import Navigation from "../Components/Navigation";
@@ -15,7 +15,7 @@ type UserRole = {
 export default function HomeLayout() {
   const { isPending, error, data } = useQuery<UserRole>({
     queryKey: ["user"],
-    queryFn: () => getAutorizationData(),
+    queryFn: () => getDataWithAuth(),
   });
 
   if (isPending) return <Loading />;

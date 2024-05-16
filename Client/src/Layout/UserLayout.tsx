@@ -1,3 +1,9 @@
+import User from "../Page/User";
+
 export default function UserLayout() {
-  return <></>;
+  return (
+    <>
+      <User />
+    </>
+  );
 }

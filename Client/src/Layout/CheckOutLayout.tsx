@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAutorizationData } from "../Utils/httpRequest";
+import { getDataWithAuth } from "../Utils/httpRequest";
 import Loading from "../Components/Loading";
 import { Redirect } from "wouter";
 import CheckOut from "../Page/CheckOut";
@@ -13,7 +13,7 @@ type UserRole = {
 export default function CheckOutLayout() {
   const { isPending, error, data } = useQuery<UserRole>({
     queryKey: ["user"],
-    queryFn: () => getAutorizationData(),
+    queryFn: () => getDataWithAuth(),
   });
 
   if (isPending) {
@@ -24,19 +24,21 @@ export default function CheckOutLayout() {
     return "An error has occurred: " + error.message;
   }
 
+  if (data && !data.isUser) {
+    return <Redirect to="/auth/login" />;
+  }
+
   if (data.user && data.user.isAdmin) {
     //Admin
     return <Redirect to="/admin" />;
   }
 
-  if (!data.isUser) {
-    return <Redirect to="/auth/login" />;
-  } else {
+  if (data.user && data.isUser) {
     return (
       <>
         <Navigation user={data.user} />
         <div className="pt-[64px]">
-          <CheckOut />
+          <CheckOut user={data.user} />
         </div>
       </>
     );
