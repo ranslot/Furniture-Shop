@@ -1,8 +1,8 @@
 import { useFormContext } from "react-hook-form";
-import { userAddressSchema } from "../Utils/formSchema";
+import { userOrderSchema } from "../Utils/formSchema";
 import * as z from "zod";
 
-type UserAddress = Partial<z.infer<typeof userAddressSchema>>;
+type UserAddress = Partial<z.infer<typeof userOrderSchema>>;
 
 export default function UserAddressForm(address: UserAddress) {
   const {
@@ -16,14 +16,14 @@ export default function UserAddressForm(address: UserAddress) {
       <input
         name="address"
         {...register}
-        defaultValue={address.addressLine}
+        defaultValue={address.addressLine || ""}
         placeholder="Address"
       />
       {errors.addressLine && <p>{errors.addressLine.message}</p>}
       <input
         name="city"
         {...register}
-        defaultValue={address.city}
+        defaultValue={address.city || ""}
         placeholder="City"
       />
       {errors.city && <p>{errors.city.message}</p>}

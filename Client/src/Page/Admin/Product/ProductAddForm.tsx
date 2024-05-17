@@ -5,61 +5,9 @@ import { Link, useLocation } from "wouter";
 import { z } from "zod";
 import { postDataWithFiles } from "../../../Utils/httpRequest";
 import useAlertStore from "../../../Utils/alertStore";
+import { productFormSchema } from "../../../Utils/formSchema";
 
-const MAX_IMAGES = 5;
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
-const productStoreSchema = z.object({
-  sku: z.string().min(1, { message: "Product SKU is required." }),
-  name: z.string().min(1, { message: "Product name is required." }),
-  category: z.string().min(1, { message: "Product category is required." }),
-  description: z.string().optional(),
-  price: z.coerce
-    .number()
-    .positive()
-    .int()
-    .min(1, { message: "Product price is required." }),
-  quantity: z.coerce
-    .number()
-    .positive()
-    .int()
-    .min(1, { message: "Product quantity is required." }),
-  productImage: z
-    .custom<FileList>()
-    .refine((files) => files.length <= MAX_IMAGES, {
-      message: "You can't upload more than 5 images.",
-    })
-    .refine(
-      (files) => {
-        return Array.from(files ?? []).length !== 0;
-      },
-      { message: "Image is required." },
-    )
-    .refine(
-      (files) => {
-        return Array.from(files ?? []).every(
-          (file) => file.size <= MAX_FILE_SIZE,
-        );
-      },
-      { message: `Max file size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.` },
-    )
-    .refine(
-      (files) => {
-        return Array.from(files ?? []).every((file) =>
-          ACCEPTED_IMAGE_TYPES.includes(file.type),
-        );
-      },
-      { message: "Only .jpg, .jpeg, .png and .webp files are accepted." },
-    ),
-});
-
-type ProductStoreFormFields = z.infer<typeof productStoreSchema>;
+type ProductStoreFormFields = z.infer<typeof productFormSchema>;
 
 type ProductStoreSuccess = {
   success: true;
@@ -86,7 +34,7 @@ export default function ProductAddForm() {
     formState: { errors },
     setError,
   } = useForm<ProductStoreFormFields>({
-    resolver: zodResolver(productStoreSchema),
+    resolver: zodResolver(productFormSchema),
   });
 
   const { showAlert } = useAlertStore();
