@@ -6,13 +6,13 @@ import * as z from "zod";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CartForm from "../Components/CartForm";
-import { userAddressSchema } from "../Utils/formSchema";
+import { userOrderSchema } from "../Utils/formSchema";
 
 type CheckOutProps = {
   user: User;
 };
 
-type UserAddress = z.infer<typeof userAddressSchema>;
+type UserAddress = z.infer<typeof userOrderSchema>;
 
 type CheckOutFormData = {
   address: UserAddress;
@@ -27,7 +27,7 @@ export default function CheckOut({ user }: CheckOutProps) {
   });
 
   const methods = useForm<CheckOutFormData>({
-    resolver: zodResolver(userAddressSchema),
+    resolver: zodResolver(userOrderSchema),
   });
 
   const onSubmit: SubmitHandler<CheckOutFormData> = (formData) => {

@@ -1,27 +1,22 @@
 import * as z from "zod";
 
-export const userAddressSchema = z.object({
-  firstName: z.string().min(1, { message: "First name is required" }).max(255),
-  lastName: z.string().min(1, { message: "Last name is required" }).max(255),
-  phoneNumber: z
-    .string()
-    .min(1, { message: "Phone number is required" })
-    .max(20, { message: "Phone number cannot exceed 20 characters" }),
-  addressLine: z
-    .string()
-    .min(1, { message: "Address line is required" })
-    .max(255),
-  city: z.string().min(1, { message: "City is required" }).max(255),
-  district: z.string().min(1, { message: "District is required" }).max(255),
-  subdistrict: z
-    .string()
-    .min(1, { message: "Subdistrict is required" })
-    .max(255),
-  postalCode: z
-    .string()
-    .min(1, { message: "Postal code is required" })
-    .max(20, { message: "Postal code cannot exceed 20 characters" }),
+const productOrderSchema = z.object({
+  productId: z.number().int(),
+  productAmount: z.number().int(),
+});
+
+export const userOrderSchema = z.object({
+  firstName: z.string().min(1, { message: "First name is required" }),
+  lastName: z.string().min(1, { message: "Last name is required" }),
+  phoneNumber: z.string().min(1, { message: "Phone number is required" }),
+  addressLine: z.string().min(1, { message: "Address line is required" }),
+  city: z.string().min(1, { message: "City is required" }),
+  district: z.string().min(1, { message: "District is required" }),
+  subdistrict: z.string().min(1, { message: "Subdistrict is required" }),
+  postalCode: z.string().min(1, { message: "Postal code is required" }),
   userId: z.number().int(),
+  product: z.array(productOrderSchema),
+  totalPrice: z.number().int(),
 });
 
 const MAX_IMAGES = 5;
@@ -33,7 +28,7 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export const productEditSchema = z.object({
+export const productFormSchema = z.object({
   sku: z.string().min(1, { message: "Product SKU is required." }),
   name: z.string().min(1, { message: "Product name is required." }),
   category: z.string().min(1, { message: "Product category is required." }),

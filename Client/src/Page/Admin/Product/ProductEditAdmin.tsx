@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getDataWithAuth, postDataWithFiles } from "../../../Utils/httpRequest";
 import useAlertStore from "../../../Utils/alertStore";
-import { productEditSchema } from "../../../Utils/formSchema";
+import { productFormSchema } from "../../../Utils/formSchema";
 
-type ProductEditFormFields = z.infer<typeof productEditSchema>;
+type ProductEditFormFields = z.infer<typeof productFormSchema>;
 
 type ProductEditSuccess = {
   success: true;
@@ -43,7 +43,7 @@ export default function ProductEditAdmin() {
     formState: { errors },
     setError,
   } = useForm<ProductEditFormFields>({
-    resolver: zodResolver(productEditSchema),
+    resolver: zodResolver(productFormSchema),
   });
 
   const { showAlert } = useAlertStore();
